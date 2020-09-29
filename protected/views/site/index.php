@@ -3,7 +3,7 @@ if (Yii::app()->user->isGuest)
 { 
 ?>
 <center>
-    <h3>Bienvenido al Sistema Consultorio </h3>
+    <h3>INTEGRAL FAMILIAR </h3>
        
         <h4>
        
