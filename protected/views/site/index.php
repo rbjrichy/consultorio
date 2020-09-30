@@ -11,11 +11,14 @@ if (Yii::app()->user->isGuest)
         <BR> 
         <BR>
         <BR>
-	<?php //echo CHtml::encode(Yii::app()->name); ?></h4><br>
+	<?php //echo CHtml::encode(Yii::app()->name); 
+        echo "Versión de Yii ".Yii::getVersion(); 
+        // print_r(Yii::app()->theme->baseUrl);
+    ?></h4><br>
        
         
         
-         <br><h6>Consultas:<br><br></h6> Llamar al teléfono/Fax: 464-52196 Celulares: 67629904 
+         <br><h1>Consultas:<br><br></h1> Llamar al teléfono/Fax: 464-52196 Celulares: 67629904 
          <br>
          <br>
          Dirección: Vaca Guzman #198 (Sucre - Bolivia). Email: -------
