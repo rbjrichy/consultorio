@@ -197,6 +197,7 @@
                     <?php echo CHtml::submitButton('Generar',array(
                         'id'=>'btnconsulta',
                         'name'=>'btnconsulta',
+                        'class' => 'genric-btn primary-border radius small'
                         )); 
                     ?>
 
@@ -206,7 +207,12 @@
         </tr>
     </table>
     </div>
-    <?php $this->endWidget();
+    <div class="mb-5 pb-5">
+        
+    </div>
+    <?php 
+
+    $this->endWidget();
 
      ?>
 

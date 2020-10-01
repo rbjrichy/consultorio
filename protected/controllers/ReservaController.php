@@ -85,7 +85,7 @@ class ReservaController extends Controller
 			}
 			else
 			{
-				var_dump($model->errors);
+				// var_dump($model->errors);
 			}
 				
 
@@ -260,7 +260,7 @@ class ReservaController extends Controller
 	public function actionSelecthorarios()
     {		
     	$fechareserva = $_POST['fechareserva'];
-    	//$fechareserva = $_GET['fechareserva'];
+    	// $fechareserva = '2020-10-01';
     	$sql="
           	select *
 			from horario
@@ -271,7 +271,7 @@ class ReservaController extends Controller
 							where r.fechareserva = '".$fechareserva."' and 
 							      r.idestadoreserva != 3)
           ";
-
+          // echo $sql;
           $connection = Yii::app()->db;
           $command=$connection->createCommand($sql);
           $resultados=$command->queryall();

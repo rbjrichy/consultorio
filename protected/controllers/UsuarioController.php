@@ -37,7 +37,7 @@ class UsuarioController extends Controller
                 'users'   => array('*'),
             ),
             array('allow', // allow all users to perform 'index' and 'view' actions
-                'actions' => array('index', 'view'),
+                'actions' => array('index', 'view', 'registroExterno'),
                 'users'   => array('*'),
             ),
             array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -305,5 +305,41 @@ class UsuarioController extends Controller
             echo CActiveForm::validate($model);
             Yii::app()->end();
         }
+    }
+
+    public function actionRegistroExterno()
+    {
+        $model = new Usuario;
+
+        // Uncomment the following line if AJAX validation is needed
+        // $this->performAjaxValidation($model);
+        // var_dump($_POST);
+        // Yii::app()->end();
+
+        if (isset($_POST['Usuario'])) {
+            $model->attributes = $_POST['Usuario'];
+            $model->clave      = md5($model->clave);
+            // var_dump($_POST);
+            // Yii::app()->end();
+            // se esta harcodeando, lo recomendable es obtener los datos segun se requiera con consultas
+            $model->ci = '0';
+            $model->idsexo = '1';
+            $model->idocupacion = '3';
+            $model->idciudad = '1';
+            $model->numerotelefono = '0';
+            $model->fecharegistro = date('Y-m-d');
+            $model->idtipousuario = '4';
+            $model->idpaciente = '0'; //no corresponde error en el diseño de la bd
+
+            if ($model->save()) {
+            //Si se guarda exitosamente se crea un registro paciente, luego se manda a login
+                $this->redirect(array('site/login'));
+            }
+
+        }
+
+        $this->render('registroExterno', array(
+            'model' => $model,
+        ));
     }
 }

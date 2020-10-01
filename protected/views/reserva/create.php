@@ -12,7 +12,8 @@ $this->menu=array(
 	array('label'=>'Manage Reserva', 'url'=>array('admin')),
 );
 ?>
-
-<h1>Crear Reserva</h1>
+<div class="typography">
+	<h1>Crear Reserva</h1>
+</div>
 
 <?php $this->renderPartial('_form', array('model'=>$model)); ?>

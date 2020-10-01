@@ -25,10 +25,11 @@ $('.search-form form').submit(function(){
 });
 ");
 ?>
-
+<div class="typography">
 <h1>Reservar Citas</h1>
+</div>
 
-<a href="index.php?r=reserva/create" ><font  color = 'blue'>Crear Reserva</font></a>
+<a class="genric-btn success ratius small" href="index.php?r=reserva/create" >Crear Reserva</a>
 
 <?php $this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'reserva-grid',

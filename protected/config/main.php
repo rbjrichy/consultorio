@@ -16,32 +16,14 @@ return array(
         'application.models.*',
         'application.components.*',
         'application.extensions.*',
-        //'ext.yii-mail.YiiMailMessage',
     ),
-    // 'components' =>array(
-    //          'mail' => array(
-    //              'class' =>'ext.yii-mail.YiiMailMessage',
-    //             'trasportType' =>'smtp',
-    //             'trasportOptions' => array(
-    //               'host' =>'smtp.hotmail.com'.
-    //                   'encryption' =>'ssl',
-    //                   'username' =>'web@hotmail.com',
-    //                   'password' =>'123',
-    //                   'port' => 465,
-    //                 ),
-    //                   'viewPath' =>
-    //              )
-    //     )
     'language'       => 'es', // Este es el lenguaje en el que querés que muestre las cosas
     'sourceLanguage' => 'en',
-    // 'theme'=>'classic',
-
     'modules'        => array(
         // uncomment the following to enable the Gii tool
-
         'gii' => array(
             'class'     => 'system.gii.GiiModule',
-            'password'  => '12345',
+            'password'  => '123456',
             // If removed, Gii defaults to localhost only. Edit carefully to taste.
             'ipFilters' => array('127.0.0.1', '::1'),
         ),
@@ -70,12 +52,7 @@ return array(
         '<controller:\w+>/<action:\w+>'          => '<controller>/<action>',
         ),
         ),*/
-        /*
-        'db'=>array(
-        'connectionString' => 'sqlite:'.dirname(__FILE__).'/../data/testdrive.db',
-        ),*/
         // uncomment the following to use a MySQL database
-
         'db'           => array(
             'connectionString' => 'mysql:host=localhost;dbname=consultorio',
             'emulatePrepare'   => true,

@@ -73,7 +73,7 @@ class Usuario extends CActiveRecord
 			array('nombres', 'length', 'max'=>100),
 			array('apellidopaterno, apellidomaterno, nombreusuario, clave, email, direccion', 'length', 'max'=>50),
 			array('ci, numerotelefono, numerocelular', 'length', 'max'=>10),
-			array('nombreusuario, email, ci', 'unique'),
+			array('nombreusuario, email', 'unique'),
 
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
@@ -105,10 +105,10 @@ class Usuario extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'nombres' => 'Nombres',
-			'apellidopaterno' => 'Apellido Paterno',
-			'apellidomaterno' => 'Apellido Materno',
+			'apellidopaterno' => 'Primer Apellido',
+			'apellidomaterno' => 'Segundo Apellido',
 			'nombreusuario' => 'Usuario',
-			'clave' => 'Contrasena',
+			'clave' => 'Contraseña',
 			'ci' => 'C.I.',
 			'idsexo' => 'Sexo',
 			'idocupacion' =>'Ocupacion',

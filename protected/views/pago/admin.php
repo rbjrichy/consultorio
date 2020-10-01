@@ -25,11 +25,12 @@ $('.search-form form').submit(function(){
 });
 ");
 ?>
+<div class="typography">
+	<h1>Registrar Pagos</h1>
+</div>
 
-<h1>Registrar Pagos</h1>
 
-
-<a href="index.php?r=pago/registrarpago" ><font  color = 'blue'>Crear Pago</font></a>
+<a class="genric-btn success radius small" href="index.php?r=pago/registrarpago" >Crear Pago</a>
 
 
 <?php $this->widget('zii.widgets.grid.CGridView', array(

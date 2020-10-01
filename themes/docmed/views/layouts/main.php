@@ -19,12 +19,14 @@
         <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/flaticon.css">
         <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/gijgo.css">
         <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/animate.css">
-        <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/slicknav.css">
+        <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/slicknav.css"> 
         <link rel="stylesheet" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/style.css">
         <!-- <link rel="stylesheet" href="css/responsive.css"> -->
         <!-- css theme classic -->
         <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/main.css" />
         <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/form.css" />
+        <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/screen.css" media="screen, projection" />
+        <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->theme->baseUrl; ?>/css/print.css" media="print" />
         <!-- end css theme classic -->
 
 <?php
@@ -133,6 +135,7 @@ if (Yii::app()->user->isGuest) //visitante
         'id'    => 'navigation',
         'items' => array(
             array('label' => 'Inicio', 'url' => array('/site/index')),
+            array('label' => 'Resgistrate', 'url' => array('/usuario/registroExterno')),
             array('label' => 'Login', 'url' => array('/site/login'), 'visible' => Yii::app()->user->isGuest),
             array('label' => 'Logout (' . Yii::app()->user->name . ')', 'url' => array('/site/logout'), 'visible' => !Yii::app()->user->isGuest),
         ),
@@ -186,7 +189,9 @@ if (Yii::app()->user->isGuest) //visitante
         'id'    => 'navigation',
         'items' => array(
             array('label' => 'Inicio', 'url' => array('/site/index')),
-            array('label' => 'Reserva', 'url' => array('/reserva/admin_reservapaciente')),
+            array('label' => 'Perfil', 'url' => array('/pacienteAdmin/index')),
+            array('label' => 'Historial', 'url' => array('/pacienteAdmin/historialEconomico')),
+                        array('label' => 'Reserva', 'url' => array('/reserva/admin_reservapaciente')),
             array('label' => 'Salir (' . Yii::app()->user->name . ')', 'url' => array('/site/logout'), 'visible' => !Yii::app()->user->isGuest),
         ),
     ));
@@ -225,11 +230,11 @@ if (Yii::app()->user->isGuest) //visitante
 
 <div class="container">
     <div class="pull-right">
-<?php
-if (isset($this->breadcrumbs)):
-    $this->widget('zii.widgets.CBreadcrumbs', array('links' => $this->breadcrumbs));
-endif
-?>
+        <?php
+        if (isset($this->breadcrumbs)):
+            $this->widget('zii.widgets.CBreadcrumbs', array('links' => $this->breadcrumbs));
+        endif
+        ?>
     </div>
 <?php
 echo $content;
@@ -335,7 +340,7 @@ echo $content;
 <!-- footer end  -->
 <!-- link that opens popup -->
 <!-- form itself end-->
-<form id="test-form" class="white-popup-block mfp-hide">
+<!-- <form id="test-form" class="white-popup-block mfp-hide">
     <div class="popup_box ">
         <div class="popup_inner">
             <h3>Make an Appointment</h3>
@@ -379,13 +384,13 @@ echo $content;
             </form>
         </div>
     </div>
-</form>
+</form> -->
 <!-- form itself end -->
 <!-- JS here -->
-<script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/vendor/modernizr-3.5.0.min.js"></script>
 <!-- <script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/vendor/jquery-1.12.4.min.js"></script> -->
-<script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/popper.min.js"></script>
 <script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/bootstrap.min.js"></script>
+<script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/vendor/modernizr-3.5.0.min.js"></script>
+<script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/popper.min.js"></script>
 <script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/owl.carousel.min.js"></script>
 <script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/isotope.pkgd.min.js"></script>
 <script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/ajax-form.js"></script>
@@ -405,8 +410,8 @@ echo $content;
 <script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/jquery.ajaxchimp.min.js"></script>
 <script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/jquery.form.js"></script>
 <script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/jquery.validate.min.js"></script>
-<script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/mail-script.js"></script>
-<script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/main.js"></script>
+<!-- <script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/mail-script.js"></script> -->
+<!-- <script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/main.js"></script> -->
 <script>
 /**$('#datepicker').datepicker({
 iconsLibrary: 'fontawesome',

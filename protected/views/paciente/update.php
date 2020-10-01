@@ -15,7 +15,8 @@ $this->menu=array(
 	array('label'=>'Manage Paciente', 'url'=>array('admin')),
 );
 ?>
-
-<h1>Update Paciente <?php echo $model->id; ?></h1>
+<div class="typography">
+<h1>Actualizar Paciente <?php echo $model->id; ?></h1>
+</div>
 
 <?php $this->renderPartial('_form', array('model'=>$model)); ?>

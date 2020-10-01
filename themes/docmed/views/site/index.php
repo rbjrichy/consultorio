@@ -1,6 +1,6 @@
     <!-- slider_area_start -->
 
-
+<!-- 
 <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
   <div class="carousel-inner">
     <div class="carousel-item active">
@@ -21,10 +21,10 @@
     <span class="carousel-control-next-icon" aria-hidden="true"></span>
     <span class="sr-only">Next</span>
   </a>
-</div>
+</div> -->
 
 
-    <!-- <div class="slider_area_aux">
+    <div class="slider_area_aux">
         <div class="slider_active owl-carousel">
             <div class="single_slider  d-flex align-items-center slider_bg_2">
                 <div class="container">
@@ -72,7 +72,7 @@
                 </div>
             </div>
         </div>
-    </div> -->
+    </div>
     <!-- slider_area_end -->
 
     <!-- service_area_start -->
