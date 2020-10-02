@@ -68,8 +68,8 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
     'options' => array(
         'title'    => 'Ver imagen del examen exteno realizado',
         'autoOpen' => false,
-        'width'    => 700,
-        'height'   => 400,
+        'width'    => 800,
+        'height'   => 600,
         'modal'    => true,
         'overlay'  => array(
             'backgroundColor' => '#000',

@@ -45,7 +45,7 @@ class Usuario extends CActiveRecord
 			Yii::app()->session['idciudad']=$this->idciudad;
 			Yii::app()->session['idsexo']=$this->idsexo;
 			Yii::app()->session['idtipousuario']=$this->idtipousuario;
-			Yii::app()->session['idpaciente']=$this->idpaciente;
+			// Yii::app()->session['idpaciente']=$this->idpaciente;
 		}
 		return md5($password)===$this->clave;
 	}

@@ -132,7 +132,12 @@ if (Yii::app()->user->isGuest) {
   </div>
   <div class="col-sm-6">
     <div class="text-center">
-      <img alt="Vista previa de la imagen de Bootstrap" src="<?php echo Yii::app()->request->baseUrl; ?>/images/avatar/perfil-avatar-hombre-icono-redondo.jpg" class="img-thumbnail" />
+      <?php 
+        $nameAvatar = isset($datosPaciente->usuario->avatar)?$datosPaciente->usuario->avatar:'perfil-avatar-hombre-icono-redondo.jpg';
+        $pathAvatar = Yii::app()->request->baseUrl.'/images/avatar/'.$nameAvatar;
+
+      ?>
+      <img alt="Vista previa de la imagen de Bootstrap" src="<?php echo $pathAvatar; ?>" class="img-thumbnail" />
     </div>
   </div>
 </div>
