@@ -62,7 +62,6 @@ class Paciente extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID', // AQUIIIIII
-			//'idusuario' => 'ID usuario',
 			'paciente.usuario.nombres'=> 'Nombres',
 			'paciente.usuario.apellidopaterno' => 'Apellido Paterno',
 			'paciente.usuario.direccion' => 'Direccion',

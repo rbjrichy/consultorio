@@ -311,7 +311,15 @@ class PacienteController extends Controller
     	}
 		else 
 		{
-	 
+	 	
+	 	//datos paciente usuario
+        $criteria = new CDbCriteria();
+        // $criteria->join = 'inner join usuario as u on t.idusuario = u.id ';
+    	$criteria->condition = "t.id = ".$_GET["idpaciente"];
+    	// $criteria->select = 't.*, u.*';
+        $datosPaciente = Paciente::model()->find($criteria);
+        // var_dump($datosPaciente);
+        // Yii::app()->end();
         //list  just anamnesis
         $criteria = new CDbCriteria();
     	$criteria->condition = "idpaciente = ".$_GET["idpaciente"];
@@ -333,12 +341,21 @@ class PacienteController extends Controller
         $dataProviderTratamiento = new CActiveDataProvider(Tratamiento::model(), 
         	array('criteria'=>$criteria));
 
+        //List para obtener EstudiosExternos
+        $criteria = new CDbCriteria();
+    	$criteria->condition = "paciente_id = ".$_GET["idpaciente"];
+    	$criteria->order = "id";
+        $dataProviderEstExternos = new CActiveDataProvider(EstudiosExternos::model(), 
+        	array('criteria'=>$criteria));
         
         $this->render('formulario',array(
         	'dataProviderAnamnesis'=>$dataProviderAnamnesis,
         	'dataProviderAntecedentesDentales'=>$dataProviderAntecedentesDentales,
         	'dataProviderTratamiento'=>$dataProviderTratamiento,
-        	'idpaciente'=>$_GET["idpaciente"],        	
+        	'dataProviderEstExternos'=>$dataProviderEstExternos,
+        	'idpaciente'=>$_GET["idpaciente"], 
+        	'datosPaciente' => $datosPaciente, 
+        	// 'paciente' => new Paciente,
         	));
 
 	    }
@@ -413,7 +430,7 @@ class PacienteController extends Controller
 	//get strings
 		$p = new Tratamiento;
 
-		if(isset($_GET['descripcion']))
+		if(isset($_POST['descripcion']))
 		{
 			//var_dump('descripcion');
 		    	$p->descripcion = $_GET['descripcion'];

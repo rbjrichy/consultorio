@@ -388,7 +388,7 @@ echo $content;
 <!-- form itself end -->
 <!-- JS here -->
 <!-- <script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/vendor/jquery-1.12.4.min.js"></script> -->
-<script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/bootstrap.min.js"></script>
+<!-- <script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/bootstrap.min.js"></script> -->
 <script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/vendor/modernizr-3.5.0.min.js"></script>
 <script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/popper.min.js"></script>
 <script src="<?php echo Yii::app()->theme->baseUrl; ?>/js/owl.carousel.min.js"></script>
