@@ -64,18 +64,23 @@ class PacienteController extends Controller
 	public function actionCreate()
 	{
 		$model = new Paciente;
-		$model->fechanacimiento = '1990-01-01';
+
+		$dia_actual = date('Y-m-d');
+		$nuevafecha = strtotime('-30 year', strtotime ($dia_actual));
+		$model->fechanacimiento = date ('Y-m-d', $nuevafecha);
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
 		if(isset($_POST['Paciente']))
 		{
-			//var_dump($_POST['Paciente']);
 			
 			
 			$model->attributes = $_POST['Paciente'];
 
 			//var_dump($model);
+			$fecha_nacimiento = $_POST['Paciente']['fechanacimiento'];
+			$edad = date_diff(date_create($fecha_nacimiento), date_create($dia_actual));
+			$model->edad = $edad->y;
 			
 			$model->fechahoraregistro = date('Y-m-d  H:i:s');
 
@@ -108,13 +113,15 @@ class PacienteController extends Controller
 	public function actionUpdate($id)
 	{
 		$model=$this->loadModel($id);
-
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
-
+		// var_dump($model->attributes);
+		// Yii::app()->end();
 		if(isset($_POST['Paciente']))
 		{
 			$model->attributes=$_POST['Paciente'];
+			$fecha_nacimiento = $_POST['Paciente']['fechanacimiento'];
+			$dia_actual = date('Y-m-d');
+			$edad = date_diff(date_create($fecha_nacimiento), date_create($dia_actual));
+			$model->edad = $edad->y;
 			if($model->save())
 				$this->redirect(array('admin'));
 		}

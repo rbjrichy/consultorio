@@ -52,6 +52,7 @@ class Paciente extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'usuario'=> array(self::BELONGS_TO,'Usuario','idusuario'),
+			'reserva'=> array(self::HAS_MANY,'Reserva','idpaciente'),
 		);
 	}
 

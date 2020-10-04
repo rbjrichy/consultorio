@@ -10,7 +10,13 @@ $this->breadcrumbs=array(
 <div class="row mb-2 mt-2 ml-1">
 	<div>
 		<label for="">Nombre Paciente:</label>
-		<span>Juan Carlos Peñaranda</span>
+		<span>
+			<?php
+				echo isset($modelPaciente->usuario->nombres) ? $modelPaciente->usuario->nombres . ' ' : '';
+				echo isset($modelPaciente->usuario->apellidopaterno) ? $modelPaciente->usuario->apellidopaterno . ' ' : '';
+				echo isset($modelPaciente->usuario->apellidomaterno) ? $modelPaciente->usuario->apellidomaterno : '';
+			?>
+		</span>
 	</div>
 </div>
 <div class="row">
@@ -18,30 +24,19 @@ $this->breadcrumbs=array(
 		<div class="typography">
 			<h5>Tratamientos Realizados</h5>
 		</div>
-		<table class="table table-striped table-hover table-sm">
-			<thead>
-				<tr>
-					<th>#</th>
-					<th>Fecha</th>
-					<th>Descripción</th>
-					<th>Detalle</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>1</td>
-					<td>2020-09-15</td>
-					<td>Tratamiento Nro 2</td>
-					<td>tratamiento conducto pieza 65</td>
-				</tr>
-				<tr>
-					<td>2</td>
-					<td>2020-09-22</td>
-					<td>tratamiento 1</td>
-					<td>molestias en una muela nueva </td>
-				</tr>
-			</tbody>
-		</table>
+		<?php
+		//grid tratamiento
+		if (!is_array($dataProviderTratamiento)) {
+		    $this->widget('zii.widgets.grid.CGridView', array(
+		        'id'           => 'pacientetratamiento-grid',
+		        'dataProvider' => $dataProviderTratamiento,
+		        'columns'      => array(
+		            'descripcion',
+		            'detalle',
+			        ),
+			    ));
+		}
+		?>
 	</div>
 </div>
 <div class="row">
@@ -49,71 +44,49 @@ $this->breadcrumbs=array(
 		<div class="typography">
 			<h5>Consultas solicitadas</h5>
 		</div>
-		<table class="table table-striped table-hover table-sm">
-			<thead>
-				<tr>
-					<th>#</th>
-					<th>Motivo Consulta</th>
-					<th>Tratamiento Medico</th>
-					<th>Nombre Tratamiento Medico</th>
-					<th>Medicamento Tratamiento Medico</th>
-					<th>Alergias</th>
-					<th>Diabetes</th>
-					<th>Hipertension</th>
-					<th>Cardiaco</th>
-					<th>Epilepsia</th>
-					<th>Embarazada</th>
-					<th>Gastritis</th>
-					<th>Otros</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>1</td>
-					<td>ortodoncia</td>
-					<td>No</td>
-					<td>ninguno</td>
-					<td>ninguno</td>
-					<td>ninguno</td>
-					<td>No</td>
-					<td>No</td>
-					<td>No</td>
-					<td>No</td>
-					<td>No</td>
-					<td>Si</td>
-					<td>ninguno</td>
-				</tr>
-				<tr>
-					<td>2</td>
-					<td>limpieza</td>
-					<td>No</td>
-					<td>ninguno</td>
-					<td>ninguno</td>
-					<td>ninguno</td>
-					<td>No</td>
-					<td>No</td>
-					<td>No</td>
-					<td>No</td>
-					<td>No</td>
-					<td>No</td>
-					<td>ninguno</td>
-				</tr>
-				<tr>
-					<td>3</td>
-					<td>dolor al frio</td>
-					<td>No</td>
-					<td>ninguno</td>
-					<td>ninguno</td>
-					<td>ninguno</td>
-					<td>Si</td>
-					<td>Si</td>
-					<td>No</td>
-					<td>No</td>
-					<td>No</td>
-					<td>Si</td>
-					<td>ninguno</td>
-				</tr>
-			</tbody>
-		</table>
+	<?php 
+		if (!is_array($dataProviderAnamnesis)) {
+
+			$this->widget('zii.widgets.grid.CGridView', array(
+			    'id'           => 'pacienteanamnesis-grid',
+			    'dataProvider' => $dataProviderAnamnesis,
+			    'columns'      => array(
+			        'motivoconsulta',
+			        array(
+			            'name'  => 'tratamientomedico',
+			            'value' => '($data["tratamientomedico"]==0)?"No":"Si"',
+			        ),
+			        'nombretratamientomedico',
+			        'medicamentotratamientomedico',
+			        'alergias',
+			        array(
+			            'name'  => 'diabetes',
+			            'value' => '($data["diabetes"]==0)?"No":"Si"',
+			        ),
+			        array(
+			            'name'  => 'hipertension',
+			            'value' => '($data["hipertension"]==0)?"No":"Si"',
+			        ),
+			        array(
+			            'name'  => 'cardiaco',
+			            'value' => '($data["cardiaco"]==0)?"No":"Si"',
+			        ),
+			        array(
+			            'name'  => 'epilepsia',
+			            'value' => '($data["epilepsia"]==0)?"No":"Si"',
+			        ),
+			        array(
+			            'name'  => 'embarazada',
+			            'value' => '($data["embarazada"]==0)?"No":"Si"',
+			        ),
+			        array(
+			            'name'  => 'gastritis',
+			            'value' => '($data["gastritis"]==0)?"No":"Si"',
+			        ),
+			        'otros',
+			    ),
+			));
+		}
+	?>
 	</div>
 </div>

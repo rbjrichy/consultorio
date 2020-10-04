@@ -13,77 +13,80 @@ $this->menu=array(
 );
 
 Yii::app()->clientScript->registerScript('search', "
-$('.search-button').click(function(){
-	$('.search-form').toggle();
-	return false;
-});
-$('.search-form form').submit(function(){
-	$('#reserva-grid').yiiGridView('update', {
-		data: $(this).serialize()
-	});
-	return false;
-});
-");
+		$('.search-button').click(function(){
+			$('.search-form').toggle();
+			return false;
+		});
+		$('.search-form form').submit(function(){
+			$('#reserva-grid').yiiGridView('update', {
+				data: $(this).serialize()
+			});
+			return false;
+		});
+		");
+?>
+<div class="typography">
+	<h1>Reservar Citas</h1>
+</div>
+
+<a class="genric-btn primary-border radius small" href="index.php?r=reserva/createreservapaciente" >Crear Reserva</a>
+
+<?php 
+$modelUsuario = Usuario::model()->findByPk(Yii::app()->user->id);
+if ($modelUsuario->tipousuario->rol == 'Paciente') {
+// var_dump($modelUsuario->paciente->reserva);
+// Yii::app()->end();
+	// $rawData = $modelUsuario->paciente->reserva;
+$dataProvider=new CActiveDataProvider('Reserva', array(
+	    'criteria'=>array(
+	        'condition'=>'idpaciente='.$modelUsuario->paciente->id . ' AND fechareserva >= "'. date('y-m-d').'"',
+	        'order'=>'fechareserva ASC',
+	        // 'with'=>array('author'), 'fechareserva >= "'. date('y-m-d').'"'
+	    ),
+	    'countCriteria'=>array(
+	        'condition'=>'idpaciente='.$modelUsuario->paciente->id,
+	        // 'order' and 'with' clauses have no meaning for the count query
+	    ),
+	    'pagination'=>array(
+	        'pageSize'=>10,
+	    ),
+	));
+}
+// $modelReservaPaciente = 
+
 ?>
 
-<h1>Reservar Citas</h1>
+<?php 
+	$this->widget('zii.widgets.grid.CGridView', array(
+		'id'=>'reserva-grid',
+		'dataProvider'=>$dataProvider,
+		// 'filter'=>$model,
+		'columns'=>array(
+			'paciente.usuario.nombrecompleto',
+			'numeroconsultorio.descripcion',
+			'horario.descripcion',
+			array(
+			   'name'=>'Fecha Reserva',
+			   'value'=>'Yii::app()->utiles->formatearFecha($data["fechareserva"])',
+			),
+			'motivo',
+			'fechahoraregistro',
+			'estadoreserva.descripcion', 
+			array(
+				'class'=>'CButtonColumn',
+				'template'=>'{cambiarestado}{delete}',   
+		                       'buttons'=>array
+		                      (
 
-<a href="index.php?r=reserva/createreservapaciente" ><font  color = 'blue'>Crear Reserva</font></a>
-
-<?php $this->widget('zii.widgets.grid.CGridView', array(
-	'id'=>'reserva-grid',
-	'dataProvider'=>$model->search(),
-	'filter'=>$model,
-	'columns'=>array(
-array(
-
-           'name'=>'nombrecompleto',
-
-           'value'=>'$data->paciente->usuario->nombrecompleto',
-           ),
-
-       
-		array(
-                'name'=>'fechareserva',
-                'value'=>'Yii::app()->utiles->formatearFecha($data["fechareserva"])'
-            ),
-
-      array(
-
-       'name'=>'estadoreserva',
-
-       'value'=>'$data->estadoreserva->descripcion',
-
-    ),
-
-
-
-		//'id',
-		//'paciente.usuario.nombrecompleto',
-		//'numeroconsultorio.descripcion',
-		array(
-                'name'=>'fechareserva',
-                'value'=>'Yii::app()->utiles->formatearFecha($data["fechareserva"])'
-            ),
-		
-		
-		//'horario.descripcion',
-		'motivo',
-		//'estadoreserva.descripcion', 
-		array(
-			'class'=>'CButtonColumn',
-			'template'=>'{delete}{cambiarestado}',   
-	                       'buttons'=>array
-	                      (
-
-	                      	'cambiarestado'=> array
-                             (
-                              'label'=>'Cambiar Estado',
-                              'imageUrl'=>Yii::app()->request->baseUrl.'/images/edit.png',
-                              //'visible'=>'$data->docformatocarta != ""',
-                              'url'=>'Yii::app()->createUrl("reserva/updateestado", array("id"=>$data->id))',                                
-                             ),
-	                      ),
+		                      	'cambiarestado'=> array
+	                             (
+	                              'label'=>'Cambiar Estado',
+	                              'imageUrl'=>Yii::app()->request->baseUrl.'/images/edit.png',
+	                              //'visible'=>'$data->docformatocarta != ""',
+	                              'url'=>'Yii::app()->createUrl("reserva/updateestado", array("id"=>$data->id))',                                
+	                             ),
+		                      ),
+			),
 		),
-	),
-)); ?>
+	)); 
+?>

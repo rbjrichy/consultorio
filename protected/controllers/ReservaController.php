@@ -110,6 +110,8 @@ class ReservaController extends Controller
 
 			if($model->save())
 			{
+				// $this->redirect(Yii::app()->user->returnUrl);
+				
 				$this->redirect(array('admin_reservapaciente'));
 			}
 			else

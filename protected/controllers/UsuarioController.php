@@ -41,7 +41,7 @@ class UsuarioController extends Controller
                 'users'   => array('*'),
             ),
             array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('create', 'update', 'registraradmin', 'create_adminsecretaria', 'registraradminsecretaria', 'admin_secretaria'),
+                'actions' => array('create', 'update', 'registraradmin', 'create_adminsecretaria', 'registraradminsecretaria', 'admin_secretaria', 'cambiarPassword', 'ChangePassword', 'capturarfoto'),
                 'users'   => array('@'),
             ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -264,10 +264,13 @@ class UsuarioController extends Controller
             $model->apellidopaterno = strtoupper($model->apellidopaterno);
             $model->apellidomaterno = strtoupper($model->apellidomaterno);
             $model->clave           = md5($model->clave);
-
-            //var_dump($model);
-
+            $model->avatar      = $_POST['Usuario']['avatar'];
+                // var_dump($model->attributes);
+                // Yii::app()->end();
             if ($model->save()) {
+                //crear paciente automaticamente
+                $this->registroAutomaticoPaciente($model);
+
                 $this->redirect('index.php?r=usuario/registraradminsecretaria');
             }
 
@@ -327,12 +330,14 @@ class UsuarioController extends Controller
             $model->idocupacion = '3';
             $model->idciudad = '1';
             $model->numerotelefono = '0';
-            $model->fecharegistro = date('Y-m-d');
+            $model->fecharegistro = date('Y-m-d H:i:s');
             $model->idtipousuario = '4';
-            $model->idpaciente = '0'; //no corresponde error en el diseño de la bd
+            // $model->idpaciente = '0'; //no corresponde error en el diseño de la bd
 
             if ($model->save()) {
             //Si se guarda exitosamente se crea un registro paciente, luego se manda a login
+                $this->registroAutomaticoPaciente($model);
+                Yii::app()->user->setFlash('success', "Usuario creado correctamente!");
                 $this->redirect(array('site/login'));
             }
 
@@ -342,4 +347,61 @@ class UsuarioController extends Controller
             'model' => $model,
         ));
     }
+
+    private function registroAutomaticoPaciente($model)
+    {
+        $modelPaciente = new Paciente;
+        $modelPaciente->idusuario = $model->id;
+        $modelPaciente->edad = '0';
+        $modelPaciente->fechanacimiento = '1980-01-01';
+        $modelPaciente->fechahoraregistro = date('Y-m-d H:i:s');
+        $modelPaciente->save();
+    }
+
+    public function actionCambiarPassword()
+    {
+        $passwordForm = new PasswordForm;
+        if (isset($_POST['PasswordForm'])){
+            $passwordForm->setScenario('changePwd');
+            $passwordForm->old_password = $_POST["PasswordForm"]['old_password'];
+            $passwordForm->new_password = $_POST["PasswordForm"]['new_password'];
+            $passwordForm->repeat_password = $_POST["PasswordForm"]['repeat_password'];
+            if($passwordForm->validate())
+            {
+                $usuario = Usuario::model()->findByPk(Yii::app()->user->id);
+                $usuario->clave = md5($passwordForm->new_password);
+                if ($usuario->save()) 
+                {
+                    Yii::app()->user->setFlash('success', 'Password actualizado');
+                }  
+                else
+                {
+                    Yii::app()->user->setFlash('error', 'Error al actualizar el password');
+                }
+            }
+            else
+            {
+                Yii::app()->user->setFlash('error', 'Datos incorrectos');
+            }
+        }
+        $this->redirect(['pacienteAdmin/index']); 
+    }
+
+     public function actioncapturarfoto()
+     {
+        $imagenCodificada = file_get_contents("php://input"); //Obtener la imagen
+        if(strlen($imagenCodificada) <= 0) exit("No se recibió ninguna imagen");
+        //La imagen traerá al inicio data:image/png;base64, cosa que debemos remover
+        $imagenCodificadaLimpia = str_replace("data:image/png;base64,", "", urldecode($imagenCodificada));
+        //Venía en base64 pero sólo la codificamos así para que viajara por la red, ahora la decodificamos y
+        //todo el contenido lo guardamos en un archivo
+        $imagenDecodificada = base64_decode($imagenCodificadaLimpia);
+        //Calcular un nombre único
+        $nombreImagenGuardada = "foto_" . uniqid() . ".png";
+        //Escribir el archivo
+        $ruta = Yii::getPathOfAlias('webroot').'/images/avatar/';
+        file_put_contents($ruta.$nombreImagenGuardada, $imagenDecodificada);
+        //Terminar y regresar el nombre de la foto
+        exit($nombreImagenGuardada);
+     }
 }

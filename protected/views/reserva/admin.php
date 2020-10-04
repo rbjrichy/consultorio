@@ -36,55 +36,34 @@ $('.search-form form').submit(function(){
 	'dataProvider'=>$model->search(),
 	'filter'=>$model,
 	'columns'=>array(
-array(
+			'paciente.usuario.nombrecompleto',
+			'numeroconsultorio.descripcion',
+			'horario.descripcion',
+			array(
+			   'name'=>'fechareserva',
+			   'value'=>'Yii::app()->utiles->formatearFecha($data["fechareserva"])',
+			),
+			'motivo',
+			'fechahoraregistro',
+			// array(
+			//    'name'=>'estadoreserva.descripcion',
+			//    'value'=>'$data["estadoreserva"]["descripcion"]',
+			// ),
+			'estadoreserva.descripcion', 
+			array(
+				'class'=>'CButtonColumn',
+				'template'=>'{cambiarestado}{delete}',   
+		                       'buttons'=>array
+		                      (
 
-           'name'=>'nombrecompleto',
-
-           'value'=>'$data->paciente->usuario->nombrecompleto',
-           ),
-
-       
-		array(
-                'name'=>'fechareserva',
-                'value'=>'Yii::app()->utiles->formatearFecha($data["fechareserva"])'
-            ),
-
-      array(
-
-       'name'=>'estadoreserva',
-
-       'value'=>'$data->estadoreserva->descripcion',
-
-    ),
-
-
-
-		//'id',
-		//'paciente.usuario.nombrecompleto',
-		//'numeroconsultorio.descripcion',
-		array(
-                'name'=>'fechareserva',
-                'value'=>'Yii::app()->utiles->formatearFecha($data["fechareserva"])'
-            ),
-		
-		
-		//'horario.descripcion',
-		'motivo',
-		//'estadoreserva.descripcion', 
-		array(
-			'class'=>'CButtonColumn',
-			'template'=>'{delete}{cambiarestado}',   
-	                       'buttons'=>array
-	                      (
-
-	                      	'cambiarestado'=> array
-                             (
-                              'label'=>'Cambiar Estado',
-                              'imageUrl'=>Yii::app()->request->baseUrl.'/images/edit.png',
-                              //'visible'=>'$data->docformatocarta != ""',
-                              'url'=>'Yii::app()->createUrl("reserva/updateestado", array("id"=>$data->id))',                                
-                             ),
-	                      ),
+		                      	'cambiarestado'=> array
+	                             (
+	                              'label'=>'Cambiar Estado',
+	                              'imageUrl'=>Yii::app()->request->baseUrl.'/images/edit.png',
+	                              //'visible'=>'$data->docformatocarta != ""',
+	                              'url'=>'Yii::app()->createUrl("reserva/updateestado", array("id"=>$data->id))',                                
+	                             ),
+		                      ),
+			),
 		),
-	),
 )); ?>

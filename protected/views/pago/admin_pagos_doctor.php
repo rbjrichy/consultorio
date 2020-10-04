@@ -25,12 +25,12 @@ $('.search-form form').submit(function(){
 });
 ");
 ?>
-
+<div class="typography">
 <h1>Registrar Pagos por Tratamiento</h1>
+</div>
 
 
-<a href="index.php?r=pago/registrarpagodoctor" ><font  color = 'blue'>Crear Pago</font></a>
-
+<a class="genric-btn success radius small" href="index.php?r=pago/registrarpagodoctor" >Crear Pago</a>
 
 <?php $this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'pago-grid',
@@ -62,4 +62,5 @@ $('.search-form form').submit(function(){
 	                      ),
 		),
 	),
-)); ?>
+)); 
+?>

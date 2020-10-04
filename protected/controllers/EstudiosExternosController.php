@@ -59,6 +59,25 @@ class EstudiosExternosController extends Controller
         $pathImg =  Yii::app()->request->baseUrl.'/images/Estudios-Externos/'.$nameImg; 
         $this->render('verImagen',array('pathImg'=>$pathImg));
 	}
+
+
+	public function loadModel($id)
+	{
+		$model=EstudiosExternos::model()->findByPk($id);
+		if($model===null)
+			throw new CHttpException(404,'The requested page does not exist.');
+		return $model;
+	}
+
+	public function actionDelete($id)
+	{
+		$this->loadModel($id)->delete();
+
+		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+		if(!isset($_GET['ajax']))
+			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+	}
+
 	// Uncomment the following methods and override them if needed
 	/*
 	public function filters()

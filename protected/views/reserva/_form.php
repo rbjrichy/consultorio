@@ -31,47 +31,49 @@
 				<?php echo $form->error($model,'idnumeroconsultorio'); ?>
 			</div>
 			<div class="form-group">
+			<?php echo $form->labelEx($model,'fechareserva'); ?>
 				<?php 
-				echo $form->labelEx($model,'fechareserva'); 
-				// Yii::app()->request->hostInfo.''. 
-				// echo var_dump(CController::createUrl('reserva/selecthorarios'));
-				$this->widget('zii.widgets.jui.CJuiDatePicker', array(
-				'model' => $model,
-				'attribute' => 'fechareserva',
-				'name' => 'fechareserva',
-				'htmlOptions' => array(
-				'maxlength' => '10',    // textField maxlength
-				'ajax'=>array
-					(
-					'type'=>'POST',
-					'url'=>CController::createUrl('reserva/selecthorarios'),
-					'data' => array('fechareserva' => 'js:this.value'),
-					'success'=> 'function(data)
-						{
-							$("#idhorario").empty();
-							$("#idhorario").append("data");
-							$("#idhorario").trigger("liszt:updated");
-						} ',
-					),
-				),
-				'options'=>array(
-				'showAnim'=>'fold',
-				'changeYear' => 'true',
-				'dateFormat' => 'yy-mm-dd',
-				'monthNames' => array('Enero,Febrero,Marzo,Abril,Mayo,Junio,Julio,Agosto,Septiembre,Octubre,Noviembre,Diciembre'),
-				'monthNamesShort' => array("Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"),
-				'dayNames' => array('Domingo,Lunes,Martes,Miercoles,Jueves,Viernes,Sabado'),
-				'dayNamesMin' => array('Do','Lu','Ma','Mi','Ju','Vi','Sa'),
-				'changeMonth' => 'true',
-				'language'=> 'es',
-				'minDate' => date('y-m-d'),
-				),
-				'htmlOptions'=>array(
-				'class'=>'form-control single-input-primary',
-				// 'id'=>'select-fecha'
-				),
-				));
-				?>
+                    $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+                        'model' => $model,
+                        'attribute' => 'fechareserva',
+                        'name' => 'fechareserva',
+                        
+                        'htmlOptions' => array(
+                        	'class' => 'form-control single-input-primary',
+                        	'autocomplete' => 'off',
+	                        'size' => '50',         // textField size
+	                        'maxlength' => '10',    // textField maxlength
+                        'ajax'=>array
+	                        (
+	                            'type'=>'POST',
+	                            'url'=>CController::createUrl('reserva/selecthorarios'),
+	                            'data' => array('fechareserva' => 'js:this.value'),
+	                            'success'=> 'function(data) 
+	                                {
+	                                    $("#idhorario").empty();
+	                                    $("#idhorario").append(data);
+	                                    $("#idhorario").trigger("liszt:updated");
+	                                   
+	                                 } ',
+	                    
+	                         ),
+                         ),
+                        'options'=>array(
+                        'showAnim'=>'fold',
+                        'changeYear' => 'true',
+                        'dateFormat' => 'yy-mm-dd',
+                        'monthNames' => array('Enero,Febrero,Marzo,Abril,Mayo,Junio,Julio,Agosto,Septiembre,Octubre,Noviembre,Diciembre'),
+                        'monthNamesShort' => array("Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"),
+                        'dayNames' => array('Domingo,Lunes,Martes,Miercoles,Jueves,Viernes,Sabado'),
+                        'dayNamesMin' => array('Do','Lu','Ma','Mi','Ju','Vi','Sa'),
+                        'changeMonth' => 'true',
+                        'language'=> 'es',
+                        'minDate' => date('y-m-d'),
+                        //'language'=> Yii::app()->getLanguage(),
+                        ),
+                        
+                        ));
+                ?>
 			</div>
 			
 			<div class="form-group">

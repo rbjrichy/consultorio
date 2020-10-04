@@ -7,10 +7,10 @@ $this->breadcrumbs=array(
 	'Crear',
 );
 
-$this->menu=array(
-	array('label'=>'Lista Usuario', 'url'=>array('index')),
-	array('label'=>'Administrar Usuario', 'url'=>array('admin')),
-);
+// $this->menu=array(
+// 	array('label'=>'Lista Usuario', 'url'=>array('index')),
+// 	array('label'=>'Administrar Usuario', 'url'=>array('admin')),
+// );
 ?>
 
 <h1>Introducir Datos Paciente</h1>

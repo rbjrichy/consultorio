@@ -15,15 +15,20 @@ $this->breadcrumbs = array(
 					<div class="card-body">
 							<h1 class="text-center">Acceso</h1>
 							<p>Por favor ingrese sus datos:</p>
-<?php $form = $this->beginWidget('CActiveForm', array(
-    'id'                     => 'login-form',
-    'enableClientValidation' => true,
-    'errorMessageCssClass'   => 'alert alert-danger',
-    'clientOptions'          => array(
-        'validateOnSubmit' => true,
-    ),
-));
-?>
+							<?php if(Yii::app()->user->hasFlash('success')):?>
+							    <div class="alert alert-success">
+							        <?php echo Yii::app()->user->getFlash('success'); ?>
+							    </div>
+							<?php endif; ?>
+							<?php $form = $this->beginWidget('CActiveForm', array(
+							    'id'                     => 'login-form',
+							    'enableClientValidation' => true,
+							    'errorMessageCssClass'   => 'alert alert-danger',
+							    'clientOptions'          => array(
+							        'validateOnSubmit' => true,
+							    ),
+							));
+							?>
 							<p class="font-italic small">Campos con <span class="text-danger">*</span> son requeridos.</p>
 							<div class="form-group">
 								<?php echo $form->labelEx($model, 'username', ['class' => 'font-weight-bold']); ?>

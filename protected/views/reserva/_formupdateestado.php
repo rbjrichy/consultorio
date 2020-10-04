@@ -18,14 +18,14 @@
 	'enableAjaxValidation'=>false,
 )); ?>
 
-	<p class="note">Campos con <span class="required">*</span> son obligatorios.</p>
+	<p class="font-italic small">Campos con <span class="text-danger">*</span> son requeridos.</p>
+
 
 	<?php echo $form->errorSummary($model); ?>
 
 
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'idestadoreserva'); ?>
 		<?php 
 
 			echo $form->hiddenField($model,'fechareserva');
@@ -39,16 +39,19 @@
 	        
 	        $lista = CHtml::listData(Estadoreserva::model()->findAll($criteria),'id','descripcion');
 
-	        //var_dump($lista);
+	    ?>
+	    <div class="form-group">
+			<?php echo $form->labelEx($model,'idestadoreserva'); ?>
+		    <?php 
+				echo $form->dropDownList($model,'idestadoreserva', $lista, array('empty'=>'Seleccione', 'class'=>"form-control single-input-primary")); 
+			?>
+	    </div>
 
-			echo $form->dropDownList($model,'idestadoreserva', $lista, array('empty'=>'Seleccione', 'class'=>"chzn-select",'style'=>'width:300px;')); ?>
 		<?php echo $form->error($model,'idestadoreserva'); ?>
 	</div>
 	
-
-	
 	<div class="row buttons">
-		<?php echo CHtml::submitButton($model->isNewRecord ? 'Crear' : 'Guardar'); ?>
+		<?php echo CHtml::submitButton($model->isNewRecord ? 'Crear' : 'Guardar', ['class' => 'genric-btn primary-border radius']); ?>
 	</div>
 
 <?php $this->endWidget(); ?>

@@ -15,7 +15,8 @@
 	'enableAjaxValidation'=>false,
 )); ?>
 
-	<p class="note">Campos con <span class="required">*</span> son requeridos.</p>
+	<p class="font-italic small">Campos con <span class="text-danger">*</span> son requeridos.</p>
+	
 
 	<?php echo $form->errorSummary($model); ?>
 

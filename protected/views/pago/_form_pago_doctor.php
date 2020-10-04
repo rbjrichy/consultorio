@@ -18,63 +18,49 @@
 	'enableAjaxValidation'=>false,
 )); ?>
 
-	<p class="note">Campos con <span class="required">*</span> son requeridos.</p>
+	<p class="font-italic small">Campos con <span class="text-danger">*</span> son requeridos.</p>
+
 
 	<?php echo $form->errorSummary($model); ?>
+	<div class="row">
+		<div class="col-sm-6">
+              <?php echo $form->hiddenField($model,'idnumeroconsultorio',array('value' => 2));?>	                  
+            <div class="form-group">
+				<?php echo $form->labelEx($model,'idpaciente'); ?>
+				<?php 						
 
-	<table style="width:100%">
-		<tr>
-			<th>
-				<table style="width:100%">
-					<tr>
-						
-	                    <div class="row">
-		                  <?php echo $form->hiddenField($model,'idnumeroconsultorio',array('value' => 2));?>	                  
-		                 
-	                    </div>
+					$criteria = new CDbCriteria();
+			        //$criteria->condition = 'idnumeroconsultorio = 2'; 
 
-                        <div class="row">
-							<?php echo $form->labelEx($model,'idpaciente'); ?>
-							<?php 						
+			        $lista = CHtml::listData(Paciente::model()->findAll($criteria),'id','usuario.nombrecompleto');
 
-								$criteria = new CDbCriteria();
-						        //$criteria->condition = 'idnumeroconsultorio = 2'; 
+			        //var_dump($lista);
 
-						        $lista = CHtml::listData(Paciente::model()->findAll($criteria),'id','usuario.nombrecompleto');
+					echo $form->dropDownList($model,'idpaciente', $lista, array('empty'=>'Seleccione', 'class'=>"chzn-select",'style'=>'width:300px;')); ?>
+				<?php echo $form->error($model,'idpaciente'); ?>
+			</div>
 
-						        //var_dump($lista);
+			<div class="form-group">
+				<?php echo $form->labelEx($model,'numeropieza'); ?>
+				<?php echo $form->textField($model,'numeropieza',array('maxlength'=>50, 'class' => 'form-control single-input-primary')); ?>
+				<?php echo $form->error($model,'numeropieza'); ?>
+			</div>
 
-								echo $form->dropDownList($model,'idpaciente', $lista, array('empty'=>'Seleccione', 'class'=>"chzn-select",'style'=>'width:300px;')); ?>
-							<?php echo $form->error($model,'idpaciente'); ?>
-						</div>
+			<div class="form-group">
+				<?php echo $form->labelEx($model,'costo'); ?>
+				<?php echo $form->textField($model,'costo',array('maxlength'=>50, 'class' => 'form-control single-input-primary')); ?>
+				<?php echo $form->error($model,'costo'); ?>
+			</div>
 
-						<div class="row">
-							<?php echo $form->labelEx($model,'numeropieza'); ?>
-							<?php echo $form->textField($model,'numeropieza',array('size'=>50,'maxlength'=>50)); ?>
-							<?php echo $form->error($model,'numeropieza'); ?>
-						</div>
-
-						<div class="row">
-							<?php echo $form->labelEx($model,'costo'); ?>
-							<?php echo $form->textField($model,'costo',array('size'=>50,'maxlength'=>50)); ?>
-							<?php echo $form->error($model,'costo'); ?>
-						</div>
-
-						<div class="row">
-							<?php echo $form->labelEx($model,'acuenta'); ?>
-							<?php echo $form->textField($model,'acuenta',array('size'=>50,'maxlength'=>50)); ?>
-							<?php echo $form->error($model,'acuenta'); ?>
-						</div>
-					
-				</table>
-			</th>
-		</tr>
-
-
-		
-	</table>
+			<div class="form-group">
+				<?php echo $form->labelEx($model,'acuenta'); ?>
+				<?php echo $form->textField($model,'acuenta',array('maxlength'=>50, 'class' => 'form-control single-input-primary')); ?>
+				<?php echo $form->error($model,'acuenta'); ?>
+			</div>
+		</div>
+	</div>
 	
-	<?php echo CHtml::submitButton($model->isNewRecord ? 'Crear' : 'Guardar'); ?>
+	<?php echo CHtml::submitButton($model->isNewRecord ? 'Crear' : 'Guardar', ['class' => 'genric-btn primary-border radius']); ?>
 
 <?php $this->endWidget(); ?>
 

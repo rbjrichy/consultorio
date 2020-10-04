@@ -25,10 +25,11 @@ $('.search-form form').submit(function(){
 });
 ");
 ?>
-
+<div class="typography">
 <h1>Registrar Pacientes</h1>
+</div>
 
-<a href="index.php?r=paciente/create" ><font  color = 'blue'>Activar Paciente</font></a>
+<a class="genric-btn success radius small"  href="index.php?r=paciente/create" >Activar Paciente</a>
 
 <?php $this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'paciente-grid',

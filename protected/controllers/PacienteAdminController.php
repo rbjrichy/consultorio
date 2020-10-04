@@ -9,7 +9,14 @@ class PacienteAdminController extends Controller
 
 	public function actionIndex()
 	{
-		$this->render('index');
+		// $user_id = Yii::app()->user->id;
+		// $modelPaciente = Paciente::model()->find('idusuario = :id', array('id'=>$user_id));
+		$modelUsuario =Usuario::model()->findByPk(Yii::app()->user->id);
+		$modelPassword = new PasswordForm;
+		$this->render('index', 
+			['modelUsuario'=>$modelUsuario, 
+			 'modelPassword' => $modelPassword,
+		]);
 	}
 
 	public function actionSubirFoto()
@@ -19,38 +26,113 @@ class PacienteAdminController extends Controller
 
 	public function actionHistorialEconomico()
 	{
-		$this->render('historialEconomico');
+		//datos paciente usuario
+		$user_id = Yii::app()->user->id;
+		$modelPaciente = Paciente::model()->find('idusuario = :id', array('id'=>$user_id));
+		// var_dump($modelPaciente->id);
+		// Yii::app()->end();
+
+     //    $criteria = new CDbCriteria();
+    	// $criteria->condition = "t.id = ".$modelPaciente->id;
+     //    $datosPaciente = Paciente::model()->find($criteria);
+		//critero para pagos
+		if (isset($modelPaciente)) {
+			$criteria = new CDbCriteria();
+	    	$criteria->condition = "idpaciente = ".$modelPaciente->id;
+	    	$criteria->order = "fechahoraregistro desc";
+	        $dataProviderPagos = new CActiveDataProvider(Pago::model(), 
+	        	array('criteria'=>$criteria));
+		}
+		else $dataProviderPagos=[];
+
+		$this->render('historialEconomico', 
+			['modelPaciente'=>$modelPaciente, 
+			'dataProviderPagos' => $dataProviderPagos,
+		]);
 	}
 
 	public function actionHistorialClinico()
 	{
-		$this->render('historialClinico');
+		//datos paciente usuario
+		$user_id = Yii::app()->user->id;
+		$modelPaciente = Paciente::model()->find('idusuario = :id', array('id'=>$user_id));
+
+		if (isset($modelPaciente)) {
+			$criteria = new CDbCriteria();
+	    	$criteria->condition = "idpaciente = ".$modelPaciente->id;
+	    	$criteria->order = "id";
+	        $dataProviderAnamnesis = new CActiveDataProvider(Anamnesis::model(), 
+	        	array('criteria'=>$criteria));
+        }
+		else $dataProviderAnamnesis=[];
+		if (isset($modelPaciente)) {
+	        $criteria = new CDbCriteria();
+	    	$criteria->condition = "idpaciente = ".$modelPaciente->id;
+	    	$criteria->order = "id";
+	        $dataProviderTratamiento = new CActiveDataProvider(Tratamiento::model(), 
+	        	array('criteria'=>$criteria));
+	    }
+		else $dataProviderTratamiento=[];
+
+		$this->render('historialClinico', 
+			['modelPaciente'=>$modelPaciente, 
+			'dataProviderAnamnesis' => $dataProviderAnamnesis,
+			'dataProviderTratamiento' => $dataProviderTratamiento,
+		]);
 	}
 
-	// Uncomment the following methods and override them if needed
-	/*
-	public function filters()
+	public function actionsubirAvatar()
 	{
-		// return the filter configuration for this controller, e.g.:
-		return array(
-			'inlineFilterName',
-			array(
-				'class'=>'path.to.FilterClass',
-				'propertyName'=>'propertyValue',
-			),
-		);
+		$modelUsuario = Usuario::model()->findByPk(Yii::app()->user->id);
+		if(isset($_FILES))
+		{
+            $arImg = CUploadedFile::getInstance($modelUsuario,'avatar');
+            if ($arImg->getExtensionName() == 'jpg' || $arImg->getExtensionName() == 'jpeg' || $arImg->getExtensionName() == 'png') 
+            {
+            	$ruta = Yii::getPathOfAlias('webroot').'/images/avatar/';
+            	$nombre = $modelUsuario->ci.'-'.$modelUsuario->id.'-'.date("Ymdhis").'.'.$arImg->getExtensionName();
+            	$arImg->saveAs($ruta.$nombre);
+				// var_dump($modelUsuario);
+				// Yii::app()->end();
+            	$modelUsuario->avatar = $nombre;
+            }
+            else
+            {
+            	Yii::app()->user->setFlash('error_imagen', 'Imagen no válida');
+            }
+            if ($modelUsuario->save()) 
+            {
+            	Yii::app()->user->setFlash('success', 'Se guardo correctamente');
+			}  
+			else
+			{
+            	Yii::app()->user->setFlash('error', 'Error al guardar el registro');
+			}
+		}
+		else{
+			Yii::app()->user->setFlash('error', 'Seleccione una imágen');
+		}
+
+		$this->redirect(['pacienteAdmin/index']); 
 	}
 
-	public function actions()
+	public function actionActualizarPerfil()
 	{
-		// return external action classes, e.g.:
-		return array(
-			'action1'=>'path.to.ActionClass',
-			'action2'=>array(
-				'class'=>'path.to.AnotherActionClass',
-				'propertyName'=>'propertyValue',
-			),
-		);
+		$modelUsuario = Usuario::model()->findByPk(Yii::app()->user->id);
+		if (isset($_POST['Usuario'])) {
+            $modelUsuario->attributes = $_POST['Usuario'];
+			// var_dump($modelUsuario->attributes);
+			// Yii::app()->end();
+            if ($modelUsuario->save())
+            //$this->redirect(array('view','id'=>$model->id));
+            {
+                $this->redirect(array('index'));
+            }
+
+        }
+
+		$this->render('updatePerfil', [
+			'modelUsuario' => $modelUsuario,
+		]);
 	}
-	*/
 }

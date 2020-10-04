@@ -14,7 +14,8 @@ $this->menu=array(
 	array('label'=>'Manage Reserva', 'url'=>array('admin')),
 );
 ?>
-
-<h1>Actualizar Estado Reserva</h1>
+<div class="typography">
+	<h1>Actualizar Estado Reserva</h1>
+</div>
 
 <?php $this->renderPartial('_formupdateestado', array('model'=>$model)); ?>

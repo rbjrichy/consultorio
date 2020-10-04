@@ -18,13 +18,14 @@
  * @property string $direccion
  * @property string $fecharegistro
  * @property integer $idtipousuario
- * @property integer $idpaciente
+ * @property integer $avatar
  */
 class Usuario extends CActiveRecord
 {
 	/**
 	 * @return string the associated database table name
 	 */
+	
 	public function beforeSave()
 	{
 		return parent::beforeSave();
@@ -45,6 +46,7 @@ class Usuario extends CActiveRecord
 			Yii::app()->session['idciudad']=$this->idciudad;
 			Yii::app()->session['idsexo']=$this->idsexo;
 			Yii::app()->session['idtipousuario']=$this->idtipousuario;
+			
 			// Yii::app()->session['idpaciente']=$this->idpaciente;
 		}
 		return md5($password)===$this->clave;
@@ -69,16 +71,24 @@ class Usuario extends CActiveRecord
 		return array(
 			array('nombres, apellidopaterno, nombreusuario, clave, ci, idsexo,idocupacion, idciudad, numerocelular,
 				email, direccion, fecharegistro, idtipousuario', 'required'),
-			array('idciudad, idtipousuario, idsexo,idocupacion, idpaciente', 'numerical', 'integerOnly'=>true),
+			array('idciudad, idtipousuario, idsexo,idocupacion', 'numerical', 'integerOnly'=>true),
 			array('nombres', 'length', 'max'=>100),
 			array('apellidopaterno, apellidomaterno, nombreusuario, clave, email, direccion', 'length', 'max'=>50),
 			array('ci, numerotelefono, numerocelular', 'length', 'max'=>10),
 			array('nombreusuario, email', 'unique'),
-
+			array('avatar', 
+				  'file', 
+				  'types'=>'jpg,jpeg,png', 
+				  'wrongType' => 'Formatos permitidos jpg, jpeg y png',
+				  'maxSize' => 1024 * 1024 * 1,
+				  'tooLarge' => 'El tamaño maximo es de 1MB',
+				  'allowEmpty' => true,
+				  'safe'=>false,
+				),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, nombres, apellidopaterno, apellidomaterno, nombreusuario, clave, ci, idsexo,idocupacion, 
-				idciudad, numerotelefono, numerocelular,email, direccion, fecharegistro, idtipousuario,idpaciente', 'safe', 'on'=>'search'),
+				idciudad, numerotelefono, numerocelular,email, direccion, fecharegistro, idtipousuario,avatar', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -93,7 +103,7 @@ class Usuario extends CActiveRecord
 					'ocupacion'=> array(self::BELONGS_TO,'Ocupacion','idocupacion'),
 	    			'ciudad'=> array(self::BELONGS_TO,'Ciudad','idciudad'),
 	    			'tipousuario'=> array(self::BELONGS_TO,'Tipousuario','idtipousuario'),
-	    			//'paciente'=> array(self::BELONGS_TO,'Paciente','idpaciente'),
+	    			'paciente'=> array(self::HAS_ONE,'Paciente','idusuario'),
 	    			);
 	}
 
@@ -119,8 +129,8 @@ class Usuario extends CActiveRecord
 			'direccion' => 'Direccion',
 			'fecharegistro' => 'Fecha Registro',
 			'idtipousuario' => 'Tipo usuario',
-			'idpaciente' => 'Paciente',
-			'nombrecompletoordenapellido' => 'Nombre completo',			
+			'nombrecompletoordenapellido' => 'Nombre completo',	
+			'avatar' => 'avatar'		
 					
 		);
 	}
@@ -159,9 +169,6 @@ class Usuario extends CActiveRecord
 		$criteria->compare('direccion',$this->direccion,true);
 		$criteria->compare('fecharegistro',$this->fecharegistro,true);
 		$criteria->compare('idtipousuario',$this->idtipousuario);
-		$criteria->compare('idpaciente',$this->idpaciente);
-
-		
 
 		$criteria->order = 'id desc';		
 
@@ -180,7 +187,6 @@ class Usuario extends CActiveRecord
 	{
 		return parent::model($className);
 	}
-
 
 	public function getNombrecompleto()
 	{

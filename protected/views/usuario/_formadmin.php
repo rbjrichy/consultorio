@@ -19,14 +19,10 @@
 			<div class="form-group">
 				<?php echo $form->labelEx($model, 'idtipousuario'); ?>
 				<?php echo $form->dropDownList($model, 'idtipousuario', CHtml::listData(Tipousuario::model()->findAll(), 'id', 'rol')
-    , array('empty' => 'Seleccione', 'class' => "form-control single-input-primary", 'style' => 'width:300px;')); ?>
+    , array('empty' => 'Seleccione', 'class' => "form-control single-input-primary")); ?>
 				<?php echo $form->error($model, 'idtipousuario'); ?>
 			</div>
-			<div class="form-group">
-				<?php echo $form->labelEx($model, 'idpaciente'); ?>
-				<?php echo $form->dropDownList($model, 'idpaciente', array('1' => 'SI', '0' => 'NO'), array('empty' => 'Seleccione', 'class' => "form-control single-input-primary", 'style' => 'width:300px;')); ?>
-				<?php echo $form->error($model, 'idpaciente'); ?>
-			</div>
+			
 			<div class="form-group">
 				<?php echo $form->labelEx($model, 'nombreusuario'); ?>
 				<?php echo $form->textField($model, 'nombreusuario', array('maxlength' => 50, 'class' => 'form-control single-input-primary')); ?>
@@ -61,17 +57,17 @@
 		<div class="col-sm-6">
 			<div class="form-group">
 				<?php echo $form->labelEx($model, 'idsexo'); ?>
-				<?php echo $form->dropDownList($model, 'idsexo', CHtml::listData(Sexo::model()->findAll(), 'id', 'descripcion'), array('empty' => 'Seleccione', 'class' => "form-control single-input-primary", 'style' => 'width:300px;')); ?>
+				<?php echo $form->dropDownList($model, 'idsexo', CHtml::listData(Sexo::model()->findAll(), 'id', 'descripcion'), array('empty' => 'Seleccione', 'class' => "form-control single-input-primary")); ?>
 				<?php echo $form->error($model, 'idsexo'); ?>
 			</div>
 			<div class="form-group">
 				<?php echo $form->labelEx($model, 'idocupacion'); ?>
-				<?php echo $form->dropDownList($model, 'idocupacion', CHtml::listData(Ocupacion::model()->findAll(), 'id', 'descripcion'), array('empty' => 'Seleccione', 'class' => "form-control single-input-primary", 'style' => 'width:300px;')); ?>
+				<?php echo $form->dropDownList($model, 'idocupacion', CHtml::listData(Ocupacion::model()->findAll(), 'id', 'descripcion'), array('empty' => 'Seleccione', 'class' => "form-control single-input-primary")); ?>
 				<?php echo $form->error($model, 'idocupacion'); ?>
 			</div>
 			<div class="form-group">
 				<?php echo $form->labelEx($model, 'idciudad'); ?>
-				<?php echo $form->dropDownList($model, 'idciudad', CHtml::listData(Ciudad::model()->findAll(), 'id', 'nombreciudad'), array('empty' => 'Seleccione', 'class' => "form-control single-input-primary", 'style' => 'width:300px;')); ?>
+				<?php echo $form->dropDownList($model, 'idciudad', CHtml::listData(Ciudad::model()->findAll(), 'id', 'nombreciudad'), array('empty' => 'Seleccione', 'class' => "form-control single-input-primary")); ?>
 				<?php echo $form->error($model, 'idciudad'); ?>
 			</div>
 			<div class="form-group">

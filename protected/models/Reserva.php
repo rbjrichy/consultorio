@@ -36,13 +36,38 @@ class Reserva extends CActiveRecord
 			array('idpaciente, idnumeroconsultorio, idhorario', 'numerical', 'integerOnly'=>true),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, idpaciente, nombrecompleto, numeroconsultorio, idhorario, fechareserva, fechahoraregistro, motivo, idestadoreserva', 'safe', 'on'=>'search'),
+			array('id, idpaciente, nombrecompleto, numeroconsultorio, idhorario, fechareserva, fechahoraregistro, motivo, idestadoreserva, numeroconsultorio.descripcion,estadoreserva.descripcion', 'safe', 'on'=>'search'),
 		);
 	}
 
 	/**
 	 * @return array relational rules.
 	 */
+
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'id' => 'Reserva Id',
+			'idpaciente' => 'Paciente Id',
+			'paciente.usuario.nombrecompleto' =>'Nombre Completo',
+			'numeroconsultorio.descripcion'=> 'Consultorio',
+			'horario.descripcion' => 'Horario',
+			'estadoreserva' =>'Estado Reserva',
+			'fechareserva' => 'Fecha Reserva',
+			'fechahoraregistro' => 'Fecha/Hora Registro',
+			'horario.descripcion' => 'Horario',
+			'paciente.usuario.nombrecompleto' => 'Paciente',
+			'numeroconsultorio.descripcion' => 'Consultorio',
+			'motivo' => 'Motivo Consulta',
+			'estadoreserva.descripcion' => 'Estado',
+			'idestadoreserva' => 'Estado',
+		);
+	}
+
+	 
 	public function relations()
 	{
 		// NOTE: you may need to adjust the relation name and the related
@@ -56,56 +81,28 @@ class Reserva extends CActiveRecord
 
 		);
 	}
-
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
-	public function attributeLabels()
-	{
-		return array(
-			'id' => 'ID',
-			
-			'idpaciente' => 'Paciente',
-			'nombrecompleto' =>'Nombre Completo',
-			'idnumeroconsultorio'=> 'Numero Consultorio',
-			'idhorario' => 'Horario',
-			'estadoreserva' =>'estadoreserva',
-			'fechareserva' => 'Fecha Reserva',
-			'fechahoraregistro' => 'Fecha/Hora Registro',
-			'horario.descripcion' => 'Horario',
-			'paciente.nombrecompleto' => 'Paciente',
-			'motivo' => 'Motivo',
-			'estadoreserva.descripcion' => 'Estado',
-			'idestadoreserva' => 'Estado',
-		);
-	}
-
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 *
-	 * Typical usecase:
-	 * - Initialize the model fields with values from filter form.
-	 * - Execute this method to get CActiveDataProvider instance which will filter
-	 * models according to data in model fields.
-	 * - Pass data provider to CGridView, CListView or any similar widget.
-	 *
-	 * @return CActiveDataProvider the data provider that can return the models
-	 * based on the search/filter conditions.
-	 */
 	public function search()
 	{
 		// @todo Please modify the following code to remove attributes that should not be searched.
+		// $where = "";
+		// si es tu modelo, asignas el GET a los atributos en lugar de
+		// recoger directamente el campo y listo.
+		// if(isset($_GET['nombre del dato por el que filtras']))
+		// {
+		//     $where.="AND UPPER(nombreTabla.campo) LIKE '%".strtoupper($_GET['nombre del dato por el que filtras'])."%'";
+		// }
+		// var_dump($_GET);
+		// Yii::app()->end();
 
 		$criteria=new CDbCriteria;
 
 
-		$criteria->join = 'JOIN paciente gi ON gi.id = t.idpaciente';
+		// $criteria->join = 'JOIN paciente p ON p.id = t.idpaciente';
+		// $criteria->join = 'JOIN usuario u ON u.id = p.idusuario';
 
 		//para que se puede buscar por aproximidad en el search del view admin
-		$criteria->addSearchCondition('nombrecompleto','%'.$this->nombrecompleto.'%',false, 'AND','LIKE');
+		$criteria->addSearchCondition('nombrecompleto','%'.$this->nombrecompleto.'%',true, 'AND','LIKE');
 		$criteria->addSearchCondition('numeroconsultorio','%'.$this->numeroconsultorio.'%',false, 'AND','LIKE');
-
-
 
 		$criteria->compare('id',$this->id);
 		$criteria->compare('idpaciente',$this->idpaciente);
@@ -113,12 +110,14 @@ class Reserva extends CActiveRecord
 		$criteria->compare('idnumeroconsultorio',$this->idnumeroconsultorio);
 		$criteria->compare('idhorario',$this->idhorario);
 
+		$criteria->compare('idnumeroconsultorio',$this->idnumeroconsultorio);
+		$criteria->compare('idhorario',$this->idhorario);
 	
 		$criteria->compare('fechareserva',$this->fechareserva,true);
 		$criteria->compare('fechahoraregistro',$this->fechahoraregistro,true);
 
 		$criteria->compare('motivo',$this->motivo,true);
-
+		// $criteria->compare('estadoreserva.descripcion',$this->estadoreserva->descripcion,true);
 		$criteria->order = 'idnumeroconsultorio, fechareserva, idhorario';
 
 		$criteria->compare('idestadoreserva',$this->idestadoreserva);
