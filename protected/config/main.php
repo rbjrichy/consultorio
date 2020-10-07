@@ -18,6 +18,7 @@ return array(
         'application.extensions.*',
     ),
     'language'       => 'es', // Este es el lenguaje en el que querés que muestre las cosas
+    'timeZone' => 'America/La_Paz',
     'sourceLanguage' => 'en',
     'modules'        => array(
         // uncomment the following to enable the Gii tool

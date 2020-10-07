@@ -31,10 +31,6 @@ class PacienteAdminController extends Controller
 		$modelPaciente = Paciente::model()->find('idusuario = :id', array('id'=>$user_id));
 		// var_dump($modelPaciente->id);
 		// Yii::app()->end();
-
-     //    $criteria = new CDbCriteria();
-    	// $criteria->condition = "t.id = ".$modelPaciente->id;
-     //    $datosPaciente = Paciente::model()->find($criteria);
 		//critero para pagos
 		if (isset($modelPaciente)) {
 			$criteria = new CDbCriteria();

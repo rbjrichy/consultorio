@@ -1,4 +1,4 @@
-<?php
+	<?php
 
 /**
  * LoginForm class.
@@ -26,7 +26,7 @@ class Informe extends CFormModel
 	{
 		return array(
 			// username and password are required
-			array('idtiporeporte, idformatoreporte, titulo, fechainicio, fechafin', 'required'),
+			array('idformatoreporte, titulo, fechainicio, fechafin', 'required'),
 			
 			//array('fechadesde', 'match' ,'pattern'=>'/^[0-9]+$/u','message'=> 'Fecha Desde solo admite números y guión(-)'),
 			//array('fechahasta', 'match' ,'pattern'=>'/^[0-9]+$/u','message'=> 'Fecha Hasta solo admite números y guión(-)'),
@@ -49,9 +49,9 @@ class Informe extends CFormModel
 		return array(
 			'fechainicio' => 'Fecha Inicio',
 			'fechafin' => 'Fecha Fin',
-			'idtiporeporte' => 'Tipo Reporte',
+			'idtiporeporte' => 'Reporte',
 			'idpaciente' => 'Paciente',
-			'idformatoreporte' => 'Formato Reporte',
+			'idformatoreporte' => 'Formato',
 			'titulo' => 'Titulo del Reporte',
 			
 		);

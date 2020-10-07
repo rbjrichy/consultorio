@@ -10,7 +10,6 @@ class InformesController extends Controller
 	public function actionIndex()
 	{
             $model = new Informe;
-  
             $this->render('index',array('model'=>$model));
 	}
         
@@ -23,14 +22,14 @@ class InformesController extends Controller
           {
                 $model->attributes = $_POST['Informe'];
                 // validate user input and redirect to the previous page if valid
-                
-                    //var_dump($model);
                     if($model->idtiporeporte == 1 || $model->idtiporeporte == '1')//pagos realizados
                     {
                         $sql="
-                            SELECT fechahoraregistro as fecha_pago, numeropieza, costo, acuenta, saldo
-                            FROM pago
-                            WHERE idpaciente = '".$model->idpaciente."' ORDER BY id desc";
+                            SELECT nu.doctorasignado as Doctor, DATE_FORMAT(p.fechahoraregistro, '%e/%m/%Y') as 'Fecha Pago', tr.tratamiento as 'Tratamiento',p.numeropieza as 'Num. Pieza', p.costo, p.acuenta, p.saldo
+                            FROM pago p
+                            inner join numeroconsultorio nu on (p.idnumeroconsultorio = nu.id)
+                            inner join tratamiento tr on (p.idtratamiento = tr.id)
+                            WHERE p.idpaciente = '".$model->idpaciente."' ORDER BY p.id desc";
                     }
 
                     elseif($model->idtiporeporte == 2 || $model->idtiporeporte == '2')//reporte de pagos
@@ -47,7 +46,7 @@ class InformesController extends Controller
                       $sql="
                       SELECT SUM(acuenta) as total_recaudado, SUM(saldo) total_saldo
                       FROM pago
-                      WHERE fechahoraregistro >= '".$model->fechainicio."' and fechahoraregistro <= '".$model->fechafin."'";
+                      WHERE date_format(fechahoraregistro, '%Y-%m-%d') between '".$model->fechainicio."' and '".$model->fechafin."'";
                     }
 
                     elseif($model->idtiporeporte == 4 || $model->idtiporeporte == '4')//grafico recaudaciones por programa
@@ -72,34 +71,32 @@ class InformesController extends Controller
                     elseif($model->idtiporeporte == 5 || $model->idtiporeporte == '5')//lista pacientes por monto adeudado
                     {
                       $sql="
-                      SELECT t.nombres, t.apellidopaterno, t.apellidomaterno, SUM(p.saldo) AS monto_adeudado
-                      FROM paciente as pac
-                      JOIN usuario as t ON pac.idusuario= t.id
-                      LEFT JOIN pago as p ON p.idpaciente = pac.id 
-                      GROUP BY pac.id
-                      ORDER BY monto_adeudado desc
+                        SELECT concat(u.nombres,' ',u.apellidopaterno,' ', u.apellidomaterno) as 'Nombre Completo', concat(u.numerocelular,' ', u.numerotelefono) as Teléfonos, u.email,  SUM(pa.saldo) AS 'Monto Adeudado '
+                        FROM paciente as p 
+                        inner join usuario as u ON p.idusuario= u.id 
+                        inner join pago as pa ON pa.idpaciente = p.id 
+                        GROUP BY p.id ORDER BY pa.saldo desc
                       ";
+                      
                     }
 
                     elseif($model->idtiporeporte == 6 || $model->idtiporeporte == '6')//lista pacientes y sus pagos
                     {
                       $sql="
-                      SELECT t.apellidopaterno, t.nombres, SUM(p.acuenta) AS monto_pagado
-                      FROM paciente as pac
-                      JOIN usuario as t ON pac.idusuario= t.id
-                      LEFT JOIN pago as p ON p.idpaciente = pac.id
-                      GROUP BY pac.id
-                      ORDER BY t.apellidopaterno
+                      SELECT concat(u.apellidopaterno,' ', u.apellidomaterno,' ',u.nombres) as nombres, concat(u.numerocelular,' ', u.numerotelefono) as Teléfonos, SUM(pa.acuenta) AS 'Monto Pagado' 
+                      FROM paciente as p 
+                      inner join usuario as u ON p.idusuario= u.id 
+                      inner join pago as pa ON pa.idpaciente = p.id 
+                      GROUP BY p.id ORDER BY u.apellidopaterno
                       ";
                     }
-
                     elseif($model->idtiporeporte == 7 || $model->idtiporeporte == '7')//lista de pacientes
                     {
                       $sql="
-                      SELECT pac.apellidopaterno, pac.nombres, pac.direccion, pac.numerocelular
-                      FROM usuario as pac
-                      WHERE pac.idpaciente = 1          
-                      ORDER BY pac.apellidopaterno
+                      SELECT concat(u.apellidopaterno,' ', u.apellidomaterno,' ',u.nombres) as nombres, u.direccion, concat(u.numerocelular, ' ', u.numerotelefono) as telefonos, u.email 
+                      from consultorio.paciente p
+                      inner join consultorio.usuario u on p.idusuario = u.id
+                      order by nombres 
                       ";
                     }
 
@@ -116,13 +113,7 @@ class InformesController extends Controller
                     }
                     elseif ($model->idformatoreporte == 2 || $model->idformatoreporte == '2')//pdf 
                     {
-                        $objPHPpdf = $this->formarpdfdinamico($resultados, $model->titulo); 
-                        
-                        $pdf = Yii::createComponent('application.extensions.MPDF56.mpdf');
-                        $mpdf=new mPDF('win-1252','LETTER','','',15,15,25,12,5,7);
-                        $mpdf->WriteHTML($objPHPpdf);
-                        $mpdf->Output();
-                        exit;                             
+                        $this->renderPdf($resultados, $model);                              
                     }
                     elseif($model->idformatoreporte == 3 || $model->idformatoreporte == '3')//excel
                     {
@@ -145,6 +136,24 @@ class InformesController extends Controller
           }
         
     }
+
+function renderPdf($resultados, $model)
+{
+  $objPHPpdf = $this->formarpdfdinamico($resultados, $model->titulo); 
+  $pdf = Yii::createComponent('application.extensions.MPDF56.mpdf');
+  $mpdf=new mPDF('win-1252','LETTER','','',15,15,25,12,5,7);
+  $mpdf->SetHTMLHeader($this->renderPartial("_header", array('model'=>$model), true));
+  if ($_POST['Informe']["idpaciente"]!=0) {
+    # se tiene seleccionado un paciente
+    $mPaciente = Paciente::model()->with('usuario')->findByPk($model->idpaciente);
+    $mpdf->WriteHTML($this->renderPartial("_body", array('mPaciente'=>$mPaciente), true));
+  }
+  $mpdf->WriteHTML($objPHPpdf);
+  $mpdf->SetHTMLFooter($this->renderPartial("_footer", array(), true));
+  $mpdf->Output();
+  exit; 
+}
+
 public function actionIndex_doctor()
   {
             $model = new Informe;
@@ -160,15 +169,18 @@ public function actionIndex_doctor()
           if(isset($_POST['Informe']))
           {
                 $model->attributes = $_POST['Informe'];
-                // validate user input and redirect to the previous page if valid
+                if ($model->titulo == "") {
+                  $model->titulo = "Reporte Clínica Odontológica Integral Familiar";
+                }
                 
-                    //var_dump($model);
                     if($model->idtiporeporte == 1 || $model->idtiporeporte == '1')//pagos realizados
                     {
                         $sql="
-                            SELECT fechahoraregistro as fecha_pago, numeropieza, costo, acuenta, saldo
-                            FROM pago
-                            WHERE idpaciente = '".$model->idpaciente."' ORDER BY id desc";
+                            SELECT nu.doctorasignado as Doctor, DATE_FORMAT(p.fechahoraregistro, '%e/%m/%Y') as 'Fecha Pago', tr.tratamiento as 'Tratamiento',p.numeropieza as 'Num. Pieza', p.costo, p.acuenta, p.saldo
+                            FROM pago p
+                            inner join numeroconsultorio nu on (p.idnumeroconsultorio = nu.id)
+                            inner join tratamiento tr on (p.idtratamiento = tr.id)
+                            WHERE p.idpaciente = '".$model->idpaciente."' ORDER BY p.id desc";
                     }
 
                     elseif($model->idtiporeporte == 2 || $model->idtiporeporte == '2')//reporte de pagos
@@ -185,7 +197,7 @@ public function actionIndex_doctor()
                       $sql="
                       SELECT SUM(acuenta) as total_recaudado, SUM(saldo) total_saldo
                       FROM pago
-                      WHERE fechahoraregistro >= '".$model->fechainicio."' and fechahoraregistro <= '".$model->fechafin."'";
+                      WHERE date_format(fechahoraregistro, '%Y-%m-%d') between '".$model->fechainicio."' and '".$model->fechafin."'";
                     }
 
                     elseif($model->idtiporeporte == 4 || $model->idtiporeporte == '4')//grafico recaudaciones por programa
@@ -210,24 +222,23 @@ public function actionIndex_doctor()
                     elseif($model->idtiporeporte == 5 || $model->idtiporeporte == '5')//lista pacientes por monto adeudado
                     {
                       $sql="
-                      SELECT t.nombres, t.apellidopaterno, t.apellidomaterno, SUM(p.saldo) AS monto_adeudado
-                      FROM paciente as pac
-                      JOIN usuario as t ON pac.idusuario= t.id
-                      LEFT JOIN pago as p ON p.idpaciente = pac.id 
-                      GROUP BY pac.id
-                      ORDER BY monto_adeudado desc
+                        SELECT concat(u.nombres,' ',u.apellidopaterno,' ', u.apellidomaterno) as 'Nombre Completo', concat(u.numerocelular,' ', u.numerotelefono) as Teléfonos, u.email,  SUM(pa.saldo) AS 'Monto Adeudado '
+                        FROM paciente as p 
+                        inner join usuario as u ON p.idusuario= u.id 
+                        inner join pago as pa ON pa.idpaciente = p.id 
+                        GROUP BY p.id ORDER BY pa.saldo desc
                       ";
+                      
                     }
 
                     elseif($model->idtiporeporte == 6 || $model->idtiporeporte == '6')//lista pacientes y sus pagos
                     {
                       $sql="
-                      SELECT t.apellidopaterno, t.nombres, SUM(p.acuenta) AS monto_pagado
-                      FROM paciente as pac
-                      JOIN usuario as t ON pac.idusuario= t.id
-                      LEFT JOIN pago as p ON p.idpaciente = pac.id
-                      GROUP BY pac.id
-                      ORDER BY t.apellidopaterno
+                      SELECT concat(u.apellidopaterno,' ', u.apellidomaterno,' ',u.nombres) as nombres, concat(u.numerocelular,' ', u.numerotelefono) as Teléfonos, SUM(pa.acuenta) AS 'Monto Pagado' 
+                      FROM paciente as p 
+                      inner join usuario as u ON p.idusuario= u.id 
+                      inner join pago as pa ON pa.idpaciente = p.id 
+                      GROUP BY p.id ORDER BY u.apellidopaterno
                       ";
                     }
 
@@ -244,13 +255,7 @@ public function actionIndex_doctor()
                     }
                     elseif ($model->idformatoreporte == 2 || $model->idformatoreporte == '2')//pdf 
                     {
-                        $objPHPpdf = $this->formarpdfdinamico($resultados, $model->titulo); 
-                        
-                        $pdf = Yii::createComponent('application.extensions.MPDF56.mpdf');
-                        $mpdf=new mPDF('win-1252','LETTER','','',15,15,25,12,5,7);
-                        $mpdf->WriteHTML($objPHPpdf);
-                        $mpdf->Output();
-                        exit;                             
+                        $this->renderPdf($resultados, $model);                            
                     }
                     elseif($model->idformatoreporte == 3 || $model->idformatoreporte == '3')//excel
                     {
@@ -291,7 +296,6 @@ public function actionIndex_doctor()
           {
                 $model->attributes = $_POST['Informe'];
                 // validate user input and redirect to the previous page if valid
-                
                     //var_dump($model);
                     if($model->idtiporeporte == 1 || $model->idtiporeporte == '1')//pagos realizados
                     {
@@ -305,12 +309,11 @@ public function actionIndex_doctor()
                     elseif($model->idtiporeporte == 5 || $model->idtiporeporte == '5')//lista pacientes por monto adeudado
                     {
                       $sql="
-                      SELECT t.nombres, t.apellidopaterno, t.apellidomaterno, SUM(p.saldo) AS monto_adeudado
-                      FROM paciente as pac
-                      JOIN usuario as t ON pac.idusuario= t.id
-                      LEFT JOIN pago as p ON p.idpaciente = pac.id 
-                      GROUP BY pac.id
-                      ORDER BY monto_adeudado desc
+                        SELECT concat(u.nombres,' ',u.apellidopaterno,' ', u.apellidomaterno) as 'Nombre Completo', concat(u.numerocelular,' ', u.numerotelefono) as Teléfonos, u.email,  SUM(pa.saldo) AS 'Monto Adeudado '
+                        FROM paciente as p 
+                        inner join usuario as u ON p.idusuario= u.id 
+                        inner join pago as pa ON pa.idpaciente = p.id 
+                        GROUP BY p.id ORDER BY pa.saldo desc
                       ";
                     }
 
@@ -328,13 +331,16 @@ public function actionIndex_doctor()
                     }
                     elseif ($model->idformatoreporte == 2 || $model->idformatoreporte == '2')//pdf 
                     {
-                        $objPHPpdf = $this->formarpdfdinamico($resultados, $model->titulo); 
                         
-                        $pdf = Yii::createComponent('application.extensions.MPDF56.mpdf');
-                        $mpdf=new mPDF('win-1252','LETTER','','',15,15,25,12,5,7);
-                        $mpdf->WriteHTML($objPHPpdf);
-                        $mpdf->Output();
-                        exit;                             
+                        $this->renderPdf($resultados, $model);
+                        // $objPHPpdf = $this->formarpdfdinamico($resultados, $model->titulo); 
+                        
+                        // $pdf = Yii::createComponent('application.extensions.MPDF56.mpdf');
+                        // $mpdf=new mPDF('win-1252','LETTER','','',15,15,25,12,5,7);
+                        
+                        // $mpdf->WriteHTML($objPHPpdf);
+                        // $mpdf->Output();
+                        // exit;                             
                     }
                     elseif($model->idformatoreporte == 3 || $model->idformatoreporte == '3')//excel
                     {
@@ -427,24 +433,7 @@ public function actionIndex_doctor()
 
         private function formarpdfdinamico($array, $titulo)
         {
-            $html='
-                <table align="center" width="100%" border="0">
-                <tr>
-                  <td align="center"><img src="images/arribaimprimirpdf.png" /></td>
-                </tr>
-                <br>
-                
-                <br>
-                <tr>
-                <td align="center"><h3> '.$titulo.'</h3></td>
-                </tr>
-                <br>
-                
-                <tr>
-                <td><h6> Fecha/Hora: '.date('d/m/Y  H:i').'</h6></td>
-                </tr>
-              </table>
-              <br> 
+            $html='<br><br>
             <table style="border-collapse: collapse" border="1" width="100%" align="center">
                 <tr>';
 
@@ -488,14 +477,8 @@ public function actionIndex_doctor()
         }
         
         $html.='
-             </center>
              </table>
-             </font>
-             <hr>
-             
-             </table>
-             </body>
-          </html>';
+             ';
         
         return $html;  
 

@@ -252,15 +252,6 @@ class PagoController extends Controller
 			//verificar
 			$model->attributes = $_POST['Pago'];
 
-						
-			// if(count($lista) > 0)
-			// {
-			// 	$this->redirect('index.php?r=pagos/error');	
-			// }
-			if(0 > 0)
-			{}
-			else
-			{
 				$model->fechahoraregistro = date('Y-m-d  H:i:s');
 
 				$model->saldo = round($model->costo-$model->acuenta, 1);
@@ -279,7 +270,6 @@ class PagoController extends Controller
 						$this->redirect('index.php?r=pago/admin_pagos_doctor');	
 					}
 				}	
-			}
 		}
 
 		$this->render('create_pago_doctor',array(

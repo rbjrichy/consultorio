@@ -42,7 +42,11 @@
     ));
     ?>
   <a class="genric-btn success radius small" href="#" onclick="document.getElementById('tbl-ingresartratamiento-form').reset(); $('#'+'dialogtratamiento').dialog('open');">Nuevo Registro Tratamiento</a>
-  <a class="genric-btn info radius small" href="<?php echo Yii::app()->createUrl("pago/abonarACuenta", array("id_paciente"=>$datosPaciente->id)) ?>" >Registrar Pagos</a>
+
+    <span class="btn-pago" id="btn-pago" style="display: <?php echo ($dataProviderTratamiento->totalItemCount>0)?'inline':'none'; ?>">
+        <a class="genric-btn info radius small" href="<?php echo Yii::app()->createUrl("pago/abonarACuenta", array("id_paciente"=>$datosPaciente->id)) ?>" >Registrar Pagos</a>
+    </span>
+  
 </div>
 
 <?php
@@ -212,8 +216,8 @@ alert(mensaje);
                 console.log(data);
             },
             success: function(data){
-                console.log('success');
-                console.log(data);
+                // console.log(data);
+                $('#btn-pago').css('display','inline');
                 $('#' + 'pacientetratamiento-grid').yiiGridView('update');
                 $('#' + 'dialogtratamiento').fadeOut( "slow", function() {
                 // Animation complete.
