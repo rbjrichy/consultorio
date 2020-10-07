@@ -168,6 +168,9 @@ class ReservaController extends Controller
 			$model->fechahoraregistro = date('Y-m-d  H:i:s');
 
 			if($model->save())
+				if ($id = Yii::app()->user->id) {
+					$this->redirect(array('admin_reservapaciente'));
+				}
 				$this->redirect(array('admin'));
 		}
 
@@ -262,16 +265,17 @@ class ReservaController extends Controller
 	public function actionSelecthorarios()
     {		
     	$fechareserva = $_POST['fechareserva'];
-    	// $fechareserva = '2020-10-01';
+    	$idnumeroconsultorio = $_POST['idnumeroconsultorio'];
+    	// var_dump($_POST);
     	$sql="
           	select *
 			from horario
 			where id not in 
-							(select h.id
-							from horario h
-							join reserva r on r.idhorario = h.id
+							(select r.idhorario
+							from reserva r
 							where r.fechareserva = '".$fechareserva."' and 
-							      r.idestadoreserva != 3)
+							      r.idestadoreserva != 3
+							      and r.idnumeroconsultorio = '".$idnumeroconsultorio."')
           ";
           // echo $sql;
           $connection = Yii::app()->db;

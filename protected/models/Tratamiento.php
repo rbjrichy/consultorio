@@ -5,7 +5,7 @@
  *
  * The followings are the available columns in table 'tratamiento':
  * @property integer $id
- * @property string $descripcion
+ * @property string $tratamiento
  * @property string $detalle
  * @property integer $idpaciente
  */
@@ -27,13 +27,13 @@ class Tratamiento extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('descripcion, detalle, idpaciente', 'required'),
+			array('tratamiento, detalle, idpaciente', 'required'),
 			array('idpaciente', 'numerical', 'integerOnly'=>true),
-			array('descripcion', 'length', 'max'=>100),
+			array('tratamiento', 'length', 'max'=>100),
 			array('detalle', 'length', 'max'=>500),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, descripcion, detalle, idpaciente', 'safe', 'on'=>'search'),
+			array('id, tratamiento, detalle, idpaciente, numpieza, costo', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -45,6 +45,7 @@ class Tratamiento extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'numeroconsultorio'=> array(self::BELONGS_TO,'Numeroconsultorio','idnumeroconsultorio'),
 		);
 	}
 
@@ -55,9 +56,12 @@ class Tratamiento extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'descripcion' => 'Descripcion',
+			'tratamiento' => 'Tratamiento',
 			'detalle' => 'Detalle',
 			'idpaciente' => 'Idpaciente',
+			'numpieza' => 'Pieza',
+			'costo' => 'Costo',
+			'numeroconsultorio.doctorasignado' => 'Doctor',
 		);
 	}
 
@@ -80,7 +84,7 @@ class Tratamiento extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
-		$criteria->compare('descripcion',$this->descripcion,true);
+		$criteria->compare('tratamiento',$this->tratamiento,true);
 		$criteria->compare('detalle',$this->detalle,true);
 		$criteria->compare('idpaciente',$this->idpaciente);
 

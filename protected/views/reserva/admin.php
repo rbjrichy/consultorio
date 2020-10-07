@@ -7,10 +7,10 @@ $this->breadcrumbs=array(
 	'Registrar',
 );
 
-$this->menu=array(
-	array('label'=>'List Reserva', 'url'=>array('index')),
-	array('label'=>'Create Reserva', 'url'=>array('create')),
-);
+// $this->menu=array(
+// 	array('label'=>'List Reserva', 'url'=>array('index')),
+// 	array('label'=>'Create Reserva', 'url'=>array('create')),
+// );
 
 Yii::app()->clientScript->registerScript('search', "
 $('.search-button').click(function(){
@@ -36,9 +36,31 @@ $('.search-form form').submit(function(){
 	'dataProvider'=>$model->search(),
 	'filter'=>$model,
 	'columns'=>array(
-			'paciente.usuario.nombrecompleto',
-			'numeroconsultorio.descripcion',
-			'horario.descripcion',
+			//'paciente.usuario.nombrecompleto',
+			// 'numeroconsultorio.descripcion',
+			//'horario.descripcion',
+			array(
+
+                 'name'=>'nombrecompleto',
+
+                 'value'=>'$data->paciente->usuario->nombrecompleto',
+           ),
+		   
+		    array(
+
+              'name'=>'numeroconsultorio',
+
+               'value'=>'$data->numeroconsultorio->doctorasignado',
+
+              ),
+             array(
+
+              'name'=>'horario',
+
+               'value'=>'$data->horario->descripcion',
+
+              ),
+            
 			array(
 			   'name'=>'fechareserva',
 			   'value'=>'Yii::app()->utiles->formatearFecha($data["fechareserva"])',

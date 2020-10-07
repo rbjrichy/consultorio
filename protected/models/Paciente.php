@@ -53,6 +53,7 @@ class Paciente extends CActiveRecord
 		return array(
 			'usuario'=> array(self::BELONGS_TO,'Usuario','idusuario'),
 			'reserva'=> array(self::HAS_MANY,'Reserva','idpaciente'),
+			'pagos'=> array(self::HAS_MANY,'Pago','idpaciente'),
 		);
 	}
 

@@ -49,6 +49,14 @@ $this->breadcrumbs = array(
 								<?php echo CHtml::submitButton('Ingresar', ['class' => 'genric-btn primary-border radius']); ?>
 							</div>
 							<?php $this->endWidget();?>
+							<div class="typography">
+								<?php if ($resetContraseña == 'si'): ?>
+								<address>
+									 <strong>¿Ovido su contrseña?</strong><br /> Envie un email a la dirección <br />  adminsis@clinicafamiliar.com<br /> o llame al <abbr title="Teléfono">Tel:</abbr> 64-52196 <br>
+									<p class="font-italic small">Tiempo de respuesta 24hrs</p>
+								</address>
+								<?php endif ?>
+							</div>
 					</div>
 				</div>
 			</div>

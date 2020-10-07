@@ -19,6 +19,7 @@ class Pago extends CActiveRecord
 
 	public $nombres;
 	public $descripcion;
+	public $doctorasignado;
 	/**
 	 * @return string the associated database table name
 	 */
@@ -36,12 +37,12 @@ class Pago extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('fechahoraregistro, numeropieza, costo, acuenta, idpaciente', 'required'),
-			array('costo, acuenta, saldo, idpaciente, idnumeroconsultorio', 'numerical', 'integerOnly'=>true),
+			array('costo, acuenta, saldo, idpaciente, idnumeroconsultorio, idtratamiento', 'numerical', 'integerOnly'=>true),
 			array('numeropieza', 'numerical', 'min'=>1, 'max'=>32),
-			array('costo,acuenta', 'numerical', 'min'=>50, 'max'=>7000),
+			array('costo,acuenta', 'numerical', 'min'=>0, 'max'=>7000),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id,fechahoraregistro, nombres, numeropieza, costo, acuenta, saldo, idpaciente, descripcion, idnumeroconsultorio', 'safe', 'on'=>'search'),
+			array('id,fechahoraregistro, nombres, numeropieza, costo, acuenta, saldo, idpaciente, descripcion, idnumeroconsultorio, doctorasignado, idtratamiento', 'safe', 'on'=>'search'),
 		);
 	}
 	/**
@@ -54,6 +55,7 @@ class Pago extends CActiveRecord
 		return array(
 			'paciente'=> array(self::BELONGS_TO,'Paciente','idpaciente'),
 			'numeroconsultorio'=> array(self::BELONGS_TO,'Numeroconsultorio','idnumeroconsultorio'),
+			'tratamiento'=> array(self::BELONGS_TO,'Tratamiento','idtratamiento'),
 		);
 	}
 
@@ -70,12 +72,10 @@ class Pago extends CActiveRecord
 			'costo' => 'Costo',
 			'acuenta' => 'A Cuenta',
 			'saldo' => 'Saldo',		
-			
 			'numeroconsultorio.descripcion' => 'Consultorio',
-
+			'numeroconsultorio.doctorasignado' => 'Doctor',
 			'paciente.usuario.nombres'=>'Nombres',
-			
-
+			'tratamiento.tratamiento' => 'Tratamiento',
 		);
 	}
 
@@ -100,6 +100,8 @@ class Pago extends CActiveRecord
        // $criteria->join = 'JOIN paciente gi ON gi.id = t.idpaciente';
         $criteria->join = 'JOIN numeroconsultorio nu ON nu.id = t.idnumeroconsultorio';
         $criteria->addSearchCondition('descripcion','%'.$this->descripcion.'%',false, 'AND','LIKE');
+        $criteria->addSearchCondition('doctorasignado','%'.$this->doctorasignado.'%',false, 'AND','LIKE');
+
 
       	//$criteria->addSearchCondition('nombrecompleto','%'.$this->nombrecompleto.'%',false, 'AND','LIKE');
         $criteria->compare('idpaciente',$this->idpaciente);

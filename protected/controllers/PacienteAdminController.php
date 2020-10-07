@@ -91,26 +91,26 @@ class PacienteAdminController extends Controller
             {
             	$ruta = Yii::getPathOfAlias('webroot').'/images/avatar/';
             	$nombre = $modelUsuario->ci.'-'.$modelUsuario->id.'-'.date("Ymdhis").'.'.$arImg->getExtensionName();
-            	$arImg->saveAs($ruta.$nombre);
-				// var_dump($modelUsuario);
+				// var_dump($modelUsuario->getMetaData());
 				// Yii::app()->end();
             	$modelUsuario->avatar = $nombre;
             }
             else
             {
-            	Yii::app()->user->setFlash('error_imagen', 'Imagen no válida');
+            	Yii::app()->user->setFlash('error-imagen', 'Imagen no válida');
             }
             if ($modelUsuario->save()) 
             {
-            	Yii::app()->user->setFlash('success', 'Se guardo correctamente');
+            	$arImg->saveAs($ruta.$nombre);
+            	Yii::app()->user->setFlash('success-imagen', 'Se guardo correctamente');
 			}  
 			else
 			{
-            	Yii::app()->user->setFlash('error', 'Error al guardar el registro');
+            	Yii::app()->user->setFlash('error-imagen', 'Error al guardar el registro');
 			}
 		}
 		else{
-			Yii::app()->user->setFlash('error', 'Seleccione una imágen');
+			Yii::app()->user->setFlash('error-imagen', 'Seleccione una imágen');
 		}
 
 		$this->redirect(['pacienteAdmin/index']); 

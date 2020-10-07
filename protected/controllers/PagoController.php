@@ -32,7 +32,7 @@ class PagoController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create', 'create_pago_doctor','admin_pagos_doctor','registrarpagodoctor','update','registrarpago','error', 'lista', 'filtrarLista', 'lista_doctor', 'filtrarLista_doctor'),
+				'actions'=>array('create', 'create_pago_doctor','admin_pagos_doctor','registrarpagodoctor','update','registrarpago','error', 'lista', 'filtrarLista', 'lista_doctor', 'filtrarLista_doctor','abonarACuenta'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -166,14 +166,14 @@ class PagoController extends Controller
 	{
 
 		$model=new Pago('search');
-		$model->unsetAttributes();  
+		$model->unsetAttributes();
+		// var_dump($now);
+		// Yii::app()->end();
 
-		$criteria = new CDbCriteria();
-            $criteria->condition = 'idnumeroconsultorio = 2';// clear any default values
+		// $criteria = new CDbCriteria();
+  //       $criteria->condition = 'idnumeroconsultorio = 2';// clear any default values
 		if(isset($_GET['Pago']))
-			
 			$model->attributes=$_GET['Pago'];
-
 		$this->render('admin_pagos_doctor',array(
 			'model'=>$model,
 		));
@@ -214,37 +214,29 @@ class PagoController extends Controller
 
 		if(isset($_POST['Pago']))
 		{
-			//verificar
 			$model->attributes = $_POST['Pago'];
 
-						
-			// if(count($lista) > 0)
-			// {
-			// 	$this->redirect('index.php?r=pagos/error');	
-			// }
-			if(0 > 0)
-			{}
-			else
+			$model->fechahoraregistro = date('Y-m-d  H:i:s');
+
+			$model->saldo = round($model->costo-$model->acuenta, 1);
+			$model->idtratamiento = 19;
+			// var_dump($model->attributes);
+			// Yii::app()->end();
+			
+			if($model->save())
 			{
-				$model->fechahoraregistro = date('Y-m-d  H:i:s');
+				$modelseguimiento = new Seguimientopaciente;
 
-				$model->saldo = round($model->costo-$model->acuenta, 1);
-				
-				if($model->save())
+				$modelseguimiento->idpaciente = $model->idpaciente;
+				$modelseguimiento->idactividad = 3;//registro de pago
+				$modelseguimiento->fechahoraregistro = date('Y-m-d  H:i:s');
+				$modelseguimiento->idusuariogestion = Yii::app()->user->id;
+
+				if($modelseguimiento->save())
 				{
-					$modelseguimiento = new Seguimientopaciente;
-
-					$modelseguimiento->idpaciente = $model->idpaciente;
-					$modelseguimiento->idactividad = 3;//registro de pago
-					$modelseguimiento->fechahoraregistro = date('Y-m-d  H:i:s');
-					$modelseguimiento->idusuariogestion = Yii::app()->user->id;
-
-					if($modelseguimiento->save())
-					{
-						$this->redirect('index.php?r=pago/admin');	
-					}
-				}	
-			}
+					$this->redirect('index.php?r=pago/admin');	
+				}
+			}	
 		}
 
 		$this->render('createpago',array(
@@ -346,5 +338,88 @@ class PagoController extends Controller
 			
 		}
 		
+	}
+
+	public function actionAbonarACuenta()
+	{
+		$id_paciente = isset($_GET['id_paciente'])?$_GET['id_paciente']:null;
+		if (!is_null($id_paciente)) {
+			$pa = Paciente::model()->findByPk($id_paciente);
+			$pagoPaciente = Pago::model()->with('paciente.usuario')->find(array(
+											    'condition'=>'idpaciente=:pacienteID',
+											    'params'=>array(':pacienteID'=>$pa->id),
+												)
+											);
+		}else
+		{
+		 	$pagoPaciente = Pago::model()->with('paciente.usuario')->findByPk($_GET['idpago']);
+		}
+		$mPago = new Pago;
+		if (isset($_POST['montoPagado'])) {
+			
+			$montoPagado = $_POST['montoPagado'];
+			$paciente = Paciente::model()->findByPk($_POST['idpaciente']);
+			$this->guardarAbonos($paciente,$montoPagado);
+            Yii::app()->user->setFlash('success', 'Se abono un total de '.$_POST['montoPagado']."Bs.");
+		}
+		if(is_null($pagoPaciente))
+		{
+			$this->redirect(array('paciente/formulario','idpaciente'=>$id_paciente));
+		}
+		$criteria = new CDbCriteria();
+		$criteria->with = ['tratamiento'];
+		$criteria->condition = 't.idpaciente = '.$pagoPaciente->paciente->id .' and t.saldo > 0';
+		// $criteria->condition = "";
+		// var_dump($criteria);
+		// Yii::app()->end();
+		$listaPagos = Pago::model()->findAll($criteria);
+		
+        $this->render('abonar_cuenta', array('pagoPaciente'=>$pagoPaciente, 'listaPagos' => $listaPagos, 'mPago' => $mPago ));
+
+	}
+
+	private function guardarAbonos($paciente,$montoPagado)
+	{
+		$criteria = new CDbCriteria();
+		$criteria->with = ['tratamiento'];
+		$criteria->condition = 't.idpaciente = '.$paciente->id .' and t.saldo > 0';
+		$listaPagos = Pago::model()->findAll($criteria);
+		$iterador = 0;
+		// echo "total pagado inicial " . $montoPagado . "<br>";
+		foreach ($listaPagos as $key => $itemPago) {
+			$iterador++;
+			if ($montoPagado > 0) {
+				if ($itemPago->saldo <= $montoPagado) {
+					// echo "item es menor a total pagado <br>";
+					$montoPagado = $montoPagado - $itemPago->saldo;
+					$itemPago->acuenta = $itemPago->acuenta + $itemPago->saldo;
+					$itemPago->saldo = 0;
+					$itemPago->save();
+					// echo "costo " . $itemPago->costo . "<br>";
+					// echo "a cuenta " . $itemPago->acuenta . "<br>";
+					// echo "saldo " . $itemPago->saldo . "<br>";
+					// echo "total pagado " . $montoPagado . "<br>";
+
+				}else
+				{	/** El item tiene un saldo mayor al monto Pagado */
+					// echo "item es mayor a total pagado <br>";
+					$itemPago->acuenta = $itemPago->acuenta + $montoPagado;
+					$itemPago->saldo = $itemPago->costo - $itemPago->acuenta;
+					$montoPagado=0;
+					$itemPago->save();
+					// echo "costo " . $itemPago->costo . "<br>";
+					// echo "a cuenta " . $itemPago->acuenta . "<br>";
+					// echo "saldo " . $itemPago->saldo . "<br>";
+					// echo "total pagado " . $montoPagado . "<br>";
+					// var_dump($itemPago);
+					// Yii::app()->end();
+				}
+			}
+			else
+			{
+				// echo "salta el ciclo en la iteraccion: " .$iterador ."<br>";
+				break;
+			}
+		}
 	}
 }

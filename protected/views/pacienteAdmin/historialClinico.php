@@ -31,7 +31,8 @@ $this->breadcrumbs=array(
 		        'id'           => 'pacientetratamiento-grid',
 		        'dataProvider' => $dataProviderTratamiento,
 		        'columns'      => array(
-		            'descripcion',
+		            'numeroconsultorio.doctorasignado',
+		            'tratamiento',
 		            'detalle',
 			        ),
 			    ));

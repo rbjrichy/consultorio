@@ -8,10 +8,6 @@
 <div class="form">
 	<?php $form=$this->beginWidget('CActiveForm', array(
 		'id'=>'reserva-form',
-		// Please note: When you enable ajax validation, make sure the corresponding
-		// controller action is handling ajax validation correctly.
-		// There is a call to performAjaxValidation() commented in generated controller code.
-		// See class documentation of CActiveForm for details on this.
 		'enableAjaxValidation'=>false,
 	)); ?>
 	<div class="row">
@@ -26,8 +22,8 @@
 			</div>
 			<div class="form-group">
 				<?php echo $form->labelEx($model,'idnumeroconsultorio'); ?>
-				<?php echo $form->dropDownList($model,'idnumeroconsultorio', CHtml::listData (Numeroconsultorio::model()->findAll(),'id','descripcion')
-				, array('empty'=>'Seleccione', 'class'=>"form-control single-input-primary")); ?>
+				<?php echo $form->dropDownList($model,'idnumeroconsultorio', CHtml::listData (Numeroconsultorio::model()->findAll(),'id','doctorasignado')
+				, array('empty'=>'Seleccione', 'class'=>"form-control single-input-primary", 'onchange' => 'borrarTextoFecha()')); ?>
 				<?php echo $form->error($model,'idnumeroconsultorio'); ?>
 			</div>
 			<div class="form-group">
@@ -47,7 +43,10 @@
 	                        (
 	                            'type'=>'POST',
 	                            'url'=>CController::createUrl('reserva/selecthorarios'),
-	                            'data' => array('fechareserva' => 'js:this.value'),
+	                            'data' => array(
+	                            	'fechareserva' => 'js:this.value',
+	                        		'idnumeroconsultorio' => 'js:document.getElementById("Reserva_idnumeroconsultorio").value',
+	                        		),
 	                            'success'=> 'function(data) 
 	                                {
 	                                    $("#idhorario").empty();
@@ -55,6 +54,9 @@
 	                                    $("#idhorario").trigger("liszt:updated");
 	                                   
 	                                 } ',
+	                            'error' => 'function(data) {
+								                console.log(data);
+								              }',
 	                    
 	                         ),
                          ),
@@ -107,3 +109,9 @@
 	
 	<?php $this->endWidget(); ?>
 	</div><!-- form -->
+
+<script type="text/javascript">
+	function borrarTextoFecha() {
+	  var x = document.getElementById("fechareserva").value='';
+	}
+</script>

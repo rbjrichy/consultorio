@@ -147,5 +147,10 @@ class utiles extends CApplicationComponent
     {
         return $nombre . ' ' . $apellidoUno . ' ' . $apellidoDos;
     }
+    public function now()
+    {
+        /**fecha para comparar en eun gridview atributo visible*/
+        return date("d/m/Y");
+    }
 
 }

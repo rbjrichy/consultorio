@@ -7,10 +7,10 @@ $this->breadcrumbs=array(
 	'Crear',
 );
 
-$this->menu=array(
-	array('label'=>'List Reserva', 'url'=>array('index')),
-	array('label'=>'Manage Reserva', 'url'=>array('admin')),
-);
+// $this->menu=array(
+// 	array('label'=>'List Reserva', 'url'=>array('index')),
+// 	array('label'=>'Manage Reserva', 'url'=>array('admin')),
+// );
 ?>
 <div class="typography">
 	<h1>Crear Reserva</h1>

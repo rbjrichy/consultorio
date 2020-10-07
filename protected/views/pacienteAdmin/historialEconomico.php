@@ -20,18 +20,6 @@ $this->breadcrumbs = array(
 				?>
 			</span>
 		</div>
-		<!-- <div class="m-1">
-			<label for="">Total Pagado:</label>
-			<span>5000</span>
-		</div>
-		<div class="m-1">
-			<label for="">Total Deuda:</label>
-			<span>1500</span>
-		</div>
-		<div class="m-1">
-			<label for="">Saldo:</label>
-			<span>5048</span>
-		</div> -->
 </div>
 <div class="row">
 
@@ -42,17 +30,17 @@ $this->breadcrumbs = array(
 		    'id'           => 'pago-grid',
 		    'dataProvider' => $dataProviderPagos,
 		    'columns'      => array(
-		        'paciente.usuario.nombrecompleto',
+		        'numeroconsultorio.doctorasignado',
 		        array(
 		            'name'  => 'fechahoraregistro',
 		            //'header'=>'Date',
 		            'value' => 'Yii::app()->utiles->formatearFechaHora($data["fechahoraregistro"])',
 		        ),
+		        'tratamiento.tratamiento',
 		        'numeropieza',
 		        'costo',
 		        'acuenta',
 		        'saldo',
-		        'numeroconsultorio.descripcion',
 		    	)
 			));	
 	}

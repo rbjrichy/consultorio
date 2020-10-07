@@ -437,23 +437,50 @@ class PacienteController extends Controller
 	//get strings
 		$p = new Tratamiento;
 
-		if(isset($_POST['descripcion']))
+		// echo var_dump($_GET);
+		// return 1;
+		if(isset($_POST['ajaxtratamiento']))
 		{
-			//var_dump('descripcion');
-		    	$p->descripcion = $_GET['descripcion'];
+		    	$p->tratamiento = $_GET['tratamiento'];
                 $p->detalle = $_GET['detalle'];
                 $p->idpaciente = $_GET['idpaciente'];
-                       
+                $p->numpieza = $_GET['numpieza'];
+                $p->costo = $_GET['costo'];
+                $p->idnumeroconsultorio = $_GET['idnumeroconsultorio'];
             if ($p->save()) 
             {
-				//se guardo
-				echo 'se guardo';
+				//guardar un registro pago con la informacion del costo
+				$this->realizarPago($p);
 			}  
 		}
 		else
 		{
 			echo 'no llego';
 			//var_dump('no llego');
+		}
+	}
+	private function realizarPago($modelTratamiento)
+	{
+		$pago = new Pago;
+		$pago->fechahoraregistro = date('Y-m-d H:i:s');
+		$pago->numeropieza = $modelTratamiento->numpieza;
+		$pago->costo = $modelTratamiento->costo;
+		$pago->acuenta = '0';
+		$pago->saldo = $modelTratamiento->costo;
+		$pago->idpaciente = $modelTratamiento->idpaciente;
+		$pago->idtratamiento = $modelTratamiento->id;
+		$pago->idnumeroconsultorio = $modelTratamiento->idnumeroconsultorio;
+		// echo var_dump($pago->attributes);
+		// return 1;
+		if($pago->save())
+		{
+			$modelseguimiento = new Seguimientopaciente;
+
+			$modelseguimiento->idpaciente = $pago->idpaciente;
+			$modelseguimiento->idactividad = 3;//registro de pago
+			$modelseguimiento->fechahoraregistro = date('Y-m-d  H:i:s');
+			$modelseguimiento->idusuariogestion = Yii::app()->user->id;
+			$modelseguimiento->save();
 		}
 	}
 }

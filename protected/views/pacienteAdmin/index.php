@@ -158,11 +158,23 @@ $this->breadcrumbs=array(
 				            <?php
 				                echo CHtml::hiddenField('usuario_id', Yii::app()->user->id);
 				            ?>
+                    <?php if(Yii::app()->user->hasFlash('success-imagen')):?>
+                        <div class="alert alert-success">
+                            <?php echo Yii::app()->user->getFlash('success-imagen'); ?>
+                        </div>
+                    <?php endif; ?>
+                    <?php if(Yii::app()->user->hasFlash('error-imagen')):?>
+                        <div class="alert alert-danger">
+                            <?php echo Yii::app()->user->getFlash('error-imagen'); ?>
+                        </div>
+                    <?php endif; ?>
 				            <div class="form-group">
 				            	<label for="exampleInputFile">
-									Cambiar Foto de Perfil
-								</label>
-				                <?php echo CHtml::activeFileField($modelUsuario, 'avatar'); ?>
+      									Cambiar Foto de Perfil
+      								</label>
+				                <?php 
+                          echo CHtml::activeFileField($modelUsuario, 'avatar',['class'=>'form-control-file', 'required'=>'required', 'accept' => 'image/x-png,image/jpeg']); 
+                        ?>
 				                <p class="help-block">
 				                    Extenciones (.jpg, .png)
 				                </p>

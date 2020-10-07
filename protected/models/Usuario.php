@@ -85,6 +85,7 @@ class Usuario extends CActiveRecord
 				  'allowEmpty' => true,
 				  'safe'=>false,
 				),
+			array('avatar', 'safe'), 
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, nombres, apellidopaterno, apellidomaterno, nombreusuario, clave, ci, idsexo,idocupacion, 

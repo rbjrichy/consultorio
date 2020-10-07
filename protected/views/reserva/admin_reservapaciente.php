@@ -40,7 +40,7 @@ if ($modelUsuario->tipousuario->rol == 'Paciente') {
 $dataProvider=new CActiveDataProvider('Reserva', array(
 	    'criteria'=>array(
 	        'condition'=>'idpaciente='.$modelUsuario->paciente->id . ' AND fechareserva >= "'. date('y-m-d').'"',
-	        'order'=>'fechareserva ASC',
+	        'order'=>'fechareserva, idhorario ASC',
 	        // 'with'=>array('author'), 'fechareserva >= "'. date('y-m-d').'"'
 	    ),
 	    'countCriteria'=>array(
@@ -63,7 +63,7 @@ $dataProvider=new CActiveDataProvider('Reserva', array(
 		// 'filter'=>$model,
 		'columns'=>array(
 			'paciente.usuario.nombrecompleto',
-			'numeroconsultorio.descripcion',
+			'numeroconsultorio.doctorasignado',
 			'horario.descripcion',
 			array(
 			   'name'=>'Fecha Reserva',

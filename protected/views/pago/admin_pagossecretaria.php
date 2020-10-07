@@ -29,7 +29,6 @@ $('.search-form form').submit(function(){
 <h1>Administrar Pagos</h1>
 
 
-<a href="index.php?r=pago/registrarpagodoctor" ><font  color = 'blue'>Crear Pago</font></a>
 
 
 <?php $this->widget('zii.widgets.grid.CGridView', array(

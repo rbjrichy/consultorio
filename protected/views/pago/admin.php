@@ -7,10 +7,10 @@ $this->breadcrumbs=array(
 	'Registrar',
 );
 
-$this->menu=array(
-	array('label'=>'List Pago', 'url'=>array('index')),
-	array('label'=>'Create Pago', 'url'=>array('create')),
-);
+// $this->menu=array(
+// 	array('label'=>'List Pago', 'url'=>array('index')),
+// 	array('label'=>'Create Pago', 'url'=>array('create')),
+// );
 
 Yii::app()->clientScript->registerScript('search', "
 $('.search-button').click(function(){
@@ -30,52 +30,44 @@ $('.search-form form').submit(function(){
 </div>
 
 
-<a class="genric-btn success radius small" href="index.php?r=pago/registrarpago" >Crear Pago</a>
-
-
 <?php $this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'pago-grid',
 	'dataProvider'=>$model->search(),
 	'filter'=>$model,
 	'columns'=>array(
 	     // 'paciente.usuario.nombrecompleto',
-		
 	        array(
-
-           'name'=>'descripcion',
-
-           'value'=>'$data->numeroconsultorio->descripcion',
-           ),
-
-				array(
-
-           'name'=>'nombres',
-
-           'value'=>'$data->paciente->usuario->nombres',
-           ),
-		//'id',
-		//'id',
-		
-		       array(
+	           'name'=>'numeroconsultorio',
+	           'value'=>'$data->numeroconsultorio->doctorasignado',
+	        ),
+			array(
+	           'name'=>'nombres',
+	           'value'=>'$data->paciente->usuario->nombres',
+	           ),
+		    array(
                 'name'=>'fechahoraregistro',
-                //'header'=>'Date',
                 'value'=>'Yii::app()->utiles->formatearFechaHora($data["fechahoraregistro"])'
-              ),
+            ),
+            array(
+	           'name'=>'tratamiento',
+	           'value'=>'$data->tratamiento->tratamiento',
+	        ),
 		'numeropieza',
 		'costo',
 		'acuenta',
 		'saldo',
-
-		/*
-		'idpaciente',
-		*/
 		array(
 			'class'=>'CButtonColumn',
-			'template'=>'{update}{delete}',   
+			'template'=>'{update}{abonar}{delete}',   
 	                       'buttons'=>array
 	                      (
-	                      	
+	                      	'abonar' => array(
+							    'label'=>'Abonar a cuenta', 
+							    'url'=>'Yii::app()->createUrl("pago/abonarACuenta", array("idpago"=>$data->id))',      
+							    'imageUrl'=>Yii::app()->request->baseUrl . '/images/desembolsado.png'
+							),
 	                      ),
+
 		),
 	),
 )); ?>
